@@ -1,0 +1,2638 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>로봇팔의 ChatGPT — 발표 슬라이드</title>
+
+<!-- ===========================================
+     FONTS
+     - Archivo Black: 영문 디스플레이 (대형 숫자, 영문 헤드)
+     - Space Grotesk: 영문 본문
+     - Pretendard: 한글 전반 (Archivo Black이 한글 글리프가 없으므로
+       자동 폴백되어 한글은 Pretendard로 렌더링됩니다)
+     =========================================== -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+
+<style>
+  /* ===========================================
+     THEME (BOLD SIGNAL · Dark + Coral)
+     모든 색상은 :root에서 한 번에 변경 가능합니다.
+     =========================================== */
+  :root {
+    /* Surfaces */
+    --bg-primary: #0f0f10;
+    --bg-elev-1: #1a1a1c;
+    --bg-elev-2: #232326;
+    --bg-card: #1f1f22;
+    --border: #2d2d31;
+    --border-soft: #242427;
+
+    /* Coral focal */
+    --coral: #ff5722;
+    --coral-soft: rgba(255, 87, 34, 0.14);
+    --coral-line: rgba(255, 87, 34, 0.38);
+    --coral-deep: #cc4419;
+
+    /* Warm secondary */
+    --cream: #f5e6d3;
+    --cream-soft: rgba(245, 230, 211, 0.08);
+
+    /* Text */
+    --text-primary: #f5f5f5;
+    --text-secondary: #b8b8b8;
+    --text-muted: #6f6f74;
+    --text-on-coral: #1a1a1a;
+
+    /* Typography */
+    --font-display: "Archivo Black", "Pretendard", sans-serif;
+    --font-body: "Space Grotesk", "Pretendard", -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-ko: "Pretendard", -apple-system, BlinkMacSystemFont, sans-serif;
+
+    /* Type scale (clamp 기반 반응형) */
+    --title-size: clamp(2.5rem, 6vw, 5rem);
+    --h2-size: clamp(1.85rem, 4vw, 3.2rem);
+    --h3-size: clamp(1.3rem, 2.4vw, 1.85rem);
+    --body-size: clamp(1rem, 1.4vw, 1.3rem);
+    --small-size: clamp(0.85rem, 1.05vw, 1.05rem);
+    --tiny-size: clamp(0.72rem, 0.85vw, 0.9rem);
+
+    /* Spacing — 좀 더 넓게, 그러나 padding은 살짝 줄여 콘텐츠가 더 잘 채워지도록 */
+    --slide-padding: clamp(1.5rem, 3.4vw, 3.6rem);
+    --content-gap: clamp(1rem, 2vw, 2rem);
+    --element-gap: clamp(0.5rem, 1.1vw, 1.15rem);
+
+    /* Animation */
+    --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+    --duration-fast: 0.4s;
+    --duration-normal: 0.7s;
+  }
+
+  /* ===========================================
+     RESET
+     =========================================== */
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  /* ===========================================
+     BASE: viewport-base.css 전체 포함
+     각 슬라이드는 정확히 100vh / 100dvh, overflow:hidden.
+     =========================================== */
+  html, body {
+    height: 100%;
+    overflow-x: hidden;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  html {
+    scroll-snap-type: y mandatory;
+    scroll-behavior: smooth;
+  }
+
+  .slide {
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+    scroll-snap-align: start;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    padding: var(--slide-padding);
+  }
+
+  /* slide-content는 가운데 정렬 컨테이너 */
+  .slide-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    max-height: 100%;
+    overflow: hidden;
+    gap: var(--content-gap);
+  }
+
+  img, .image-container {
+    max-width: 100%;
+    max-height: min(50vh, 400px);
+    object-fit: contain;
+  }
+
+  /* Responsive breakpoints */
+  @media (max-height: 800px) {
+    :root {
+      --slide-padding: clamp(1.25rem, 2.8vw, 2.6rem);
+      --content-gap: clamp(0.7rem, 1.5vw, 1.4rem);
+      --title-size: clamp(1.85rem, 5vw, 3.4rem);
+      --h2-size: clamp(1.4rem, 3.4vw, 2.3rem);
+      --body-size: clamp(0.9rem, 1.2vw, 1.1rem);
+    }
+  }
+  @media (max-height: 700px) {
+    :root {
+      --slide-padding: clamp(1rem, 2.4vw, 2rem);
+      --content-gap: clamp(0.55rem, 1.2vw, 1.1rem);
+      --title-size: clamp(1.5rem, 4.5vw, 2.8rem);
+      --h2-size: clamp(1.2rem, 3vw, 1.9rem);
+      --body-size: clamp(0.82rem, 1.1vw, 1rem);
+    }
+  }
+  @media (max-height: 600px) {
+    :root {
+      --slide-padding: clamp(0.85rem, 2vw, 1.6rem);
+      --title-size: clamp(1.25rem, 4vw, 2.2rem);
+      --body-size: clamp(0.78rem, 1vw, 0.95rem);
+    }
+    .nav-dots, .keyboard-hint, .decorative { display: none; }
+  }
+  @media (max-height: 500px) {
+    :root {
+      --slide-padding: clamp(0.7rem, 1.8vw, 1.2rem);
+      --title-size: clamp(1.1rem, 3.5vw, 1.6rem);
+      --body-size: clamp(0.72rem, 0.9vw, 0.88rem);
+    }
+  }
+  @media (max-width: 600px) {
+    :root {
+      --title-size: clamp(1.4rem, 7vw, 2.5rem);
+    }
+    .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr !important; }
+    .persona-grid { grid-template-columns: 1fr !important; }
+    .compare-table { font-size: 0.75rem; }
+  }
+
+  /* Blinking REC indicator */
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.25; }
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.2s !important;
+    }
+    html { scroll-behavior: auto; }
+  }
+
+  /* ===========================================
+     GLOBAL DECOR
+     - 슬라이드 공통: 우상단 슬라이드 번호, 좌상단 브랜드 마크
+     - 다크 그라디언트 배경 + 미세 그리드
+     =========================================== */
+  body::before {
+    content: "";
+    position: fixed; inset: 0;
+    background:
+      radial-gradient(900px 500px at 100% 0%, rgba(255, 87, 34, 0.10), transparent 55%),
+      radial-gradient(700px 400px at 0% 100%, rgba(255, 87, 34, 0.06), transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .slide > * { position: relative; z-index: 1; }
+
+  /* 좌상단 브랜드 마크 — 모든 슬라이드 공통 */
+  .brand-mark {
+    position: absolute;
+    top: clamp(1.2rem, 2.2vw, 2rem);
+    left: clamp(1.5rem, 3vw, 3rem);
+    display: flex; align-items: center; gap: 0.6rem;
+    font-family: var(--font-body);
+    font-size: var(--tiny-size);
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    z-index: 5;
+  }
+  .brand-mark .dot {
+    width: 8px; height: 8px;
+    background: var(--coral);
+    border-radius: 50%;
+    box-shadow: 0 0 0 4px rgba(255, 87, 34, 0.15);
+  }
+
+  /* 우상단 페이지 카운터 */
+  .page-no {
+    position: absolute;
+    top: clamp(1.2rem, 2.2vw, 2rem);
+    right: clamp(1.5rem, 3vw, 3rem);
+    font-family: var(--font-display);
+    font-size: var(--small-size);
+    letter-spacing: 0.12em;
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+    z-index: 5;
+  }
+  .page-no b { color: var(--coral); font-weight: normal; }
+
+  /* 하단 footer 라인 */
+  .slide-footer {
+    position: absolute;
+    bottom: clamp(1.2rem, 2.2vw, 2rem);
+    left: clamp(1.5rem, 3vw, 3rem);
+    right: clamp(1.5rem, 3vw, 3rem);
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: var(--tiny-size);
+    color: var(--text-muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border-top: 1px solid var(--border-soft);
+    padding-top: clamp(0.6rem, 1vw, 0.9rem);
+    z-index: 5;
+  }
+  .slide-footer .l { color: var(--text-secondary); }
+
+  /* ===========================================
+     TYPOGRAPHY
+     =========================================== */
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    font-family: var(--font-body);
+    font-size: var(--tiny-size);
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--coral);
+    padding: 0.4rem 0.8rem;
+    background: var(--coral-soft);
+    border-radius: 100px;
+    width: max-content;
+  }
+  .eyebrow::before {
+    content: "";
+    width: 6px; height: 6px;
+    background: var(--coral);
+    border-radius: 50%;
+  }
+
+  h1.title, h2.title, h3.title {
+    font-family: var(--font-display);
+    font-weight: normal; /* Archivo Black은 자체로 900 */
+    line-height: 1.08;
+    letter-spacing: -0.015em;
+    color: var(--text-primary);
+  }
+  h1.title { font-size: var(--title-size); }
+  h2.title { font-size: var(--h2-size); }
+  h3.title { font-size: var(--h3-size); }
+
+  /* 한글 제목은 Pretendard로 자동 폴백 — 더 부드러운 트래킹 적용 */
+  h1.title, h2.title { font-family: "Archivo Black", var(--font-ko); }
+
+  p.lead {
+    font-family: var(--font-ko);
+    font-size: clamp(1.2rem, 1.85vw, 1.6rem);
+    line-height: 1.55;
+    color: var(--text-secondary);
+    max-width: 64ch;
+    font-weight: 400;
+  }
+  p.body, .card p {
+    font-family: var(--font-ko);
+    font-size: var(--body-size);
+    line-height: 1.6;
+    color: var(--text-secondary);
+    font-weight: 400;
+  }
+  .small {
+    font-family: var(--font-ko);
+    font-size: var(--small-size);
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+
+  strong { color: var(--text-primary); font-weight: 700; }
+  em { color: var(--cream); font-style: normal; font-weight: 600; }
+
+  /* ===========================================
+     CHIP / TAG
+     =========================================== */
+  .chip {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    font-family: var(--font-body);
+    font-size: var(--tiny-size);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    padding: 0.35rem 0.7rem;
+    border-radius: 6px;
+    background: var(--bg-elev-2);
+    color: var(--text-secondary);
+    border: 1px solid var(--border);
+    text-transform: uppercase;
+  }
+  .chip.coral {
+    background: var(--coral);
+    color: var(--text-on-coral);
+    border-color: transparent;
+  }
+  .chip.coral-outline {
+    background: var(--coral-soft);
+    color: var(--coral);
+    border-color: var(--coral-line);
+  }
+  .chip.cream {
+    background: var(--cream-soft);
+    color: var(--cream);
+    border-color: rgba(245, 230, 211, 0.2);
+  }
+
+  /* ===========================================
+     CARDS
+     =========================================== */
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: clamp(1rem, 1.6vw, 1.6rem);
+    display: flex; flex-direction: column;
+    gap: clamp(0.4rem, 0.8vw, 0.8rem);
+  }
+  .card h4 {
+    font-family: var(--font-ko);
+    font-weight: 700;
+    font-size: clamp(1.15rem, 1.7vw, 1.5rem);
+    color: var(--text-primary);
+    line-height: 1.3;
+  }
+  .card .num-tag {
+    font-family: var(--font-display);
+    font-size: clamp(1.8rem, 2.6vw, 2.4rem);
+    color: var(--coral);
+    line-height: 1;
+    letter-spacing: -0.03em;
+  }
+
+  /* Coral 솔리드 카드 — 핵심 포커스용 */
+  .card.coral {
+    background: var(--coral);
+    border-color: transparent;
+    color: var(--text-on-coral);
+  }
+  .card.coral h4 { color: var(--text-on-coral); }
+  .card.coral p, .card.coral .body { color: rgba(26, 26, 26, 0.78); }
+  .card.coral .num-tag { color: rgba(26, 26, 26, 0.85); }
+  .card.coral strong { color: #000; }
+
+  /* Outline 카드 — 보조 강조 */
+  .card.outline {
+    background: transparent;
+    border: 1px solid var(--coral-line);
+  }
+
+  /* ===========================================
+     LAYOUT HELPERS
+     =========================================== */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: var(--content-gap); }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--content-gap); }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--element-gap); }
+  .stack { display: flex; flex-direction: column; gap: var(--element-gap); }
+  .row { display: flex; gap: var(--element-gap); flex-wrap: wrap; align-items: center; }
+
+  /* ===========================================
+     IMAGE PLACEHOLDER
+     원본 .img-ph를 다크 테마로 재해석
+     =========================================== */
+  .img-ph {
+    border: 1.5px dashed var(--border);
+    background:
+      repeating-linear-gradient(45deg,
+        rgba(255, 255, 255, 0.012),
+        rgba(255, 255, 255, 0.012) 14px,
+        transparent 14px,
+        transparent 28px),
+      var(--bg-elev-1);
+    border-radius: 12px;
+    color: var(--text-muted);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center;
+    padding: 1rem;
+    font-size: var(--small-size);
+    gap: 0.4rem;
+  }
+  .img-ph .ph-tag {
+    font-family: var(--font-display);
+    font-size: var(--tiny-size);
+    color: var(--coral);
+    letter-spacing: 0.18em;
+    padding: 0.3rem 0.7rem;
+    background: var(--coral-soft);
+    border-radius: 100px;
+  }
+  .img-ph .ph-title {
+    font-family: var(--font-ko);
+    font-weight: 700;
+    color: var(--text-primary);
+    font-size: clamp(1rem, 1.3vw, 1.2rem);
+  }
+
+  /* ===========================================
+     COVER SLIDE
+     코럴 카드를 화면 좌측에 큼직하게 배치
+     =========================================== */
+  .cover {
+    background:
+      radial-gradient(1100px 700px at 110% -10%, rgba(255, 87, 34, 0.18), transparent 60%),
+      radial-gradient(800px 500px at -10% 110%, rgba(255, 87, 34, 0.10), transparent 55%),
+      var(--bg-primary);
+  }
+  .cover-grid {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: clamp(2rem, 4vw, 4rem);
+    flex: 1;
+    align-items: center;
+  }
+  .cover-card {
+    background: var(--coral);
+    border-radius: 18px;
+    padding: clamp(2rem, 3.5vw, 3.5rem);
+    color: var(--text-on-coral);
+    display: flex; flex-direction: column;
+    gap: clamp(1rem, 1.8vw, 1.6rem);
+    position: relative;
+    overflow: hidden;
+  }
+  .cover-card::after {
+    content: "";
+    position: absolute;
+    bottom: -40%; right: -20%;
+    width: 80%; height: 120%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.12), transparent 60%);
+    pointer-events: none;
+  }
+  .cover-kicker {
+    font-family: var(--font-display);
+    font-size: var(--small-size);
+    letter-spacing: 0.22em;
+    color: var(--text-on-coral);
+    opacity: 0.75;
+  }
+  .cover-card h1 {
+    font-family: "Archivo Black", var(--font-ko);
+    font-size: clamp(3rem, 7.5vw, 7rem);
+    line-height: 0.95;
+    letter-spacing: -0.025em;
+    color: var(--text-on-coral);
+  }
+  .cover-card .tag {
+    font-family: var(--font-ko);
+    font-size: clamp(1.2rem, 1.85vw, 1.65rem);
+    line-height: 1.5;
+    color: rgba(26, 26, 26, 0.8);
+    font-weight: 500;
+    max-width: 30ch;
+  }
+  .cover-meta-card {
+    background: var(--bg-elev-1);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: clamp(1.5rem, 2.2vw, 2.2rem);
+    display: flex; flex-direction: column;
+    gap: clamp(0.8rem, 1.4vw, 1.4rem);
+  }
+  .cover-meta-card .lbl {
+    font-family: var(--font-display);
+    font-size: var(--tiny-size);
+    letter-spacing: 0.16em;
+    color: var(--text-muted);
+  }
+  .cover-meta-card .v {
+    font-family: var(--font-ko);
+    font-size: clamp(1.1rem, 1.45vw, 1.35rem);
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+  .cover-meta-card .divider {
+    height: 1px; background: var(--border);
+  }
+
+  /* ===========================================
+     SECTION DIVIDER
+     큼지막한 코럴 그라디언트 숫자
+     =========================================== */
+  .section {
+    background:
+      radial-gradient(900px 500px at 0% 0%, rgba(255, 87, 34, 0.15), transparent 55%),
+      radial-gradient(700px 400px at 100% 100%, rgba(255, 87, 34, 0.08), transparent 50%),
+      var(--bg-primary);
+  }
+  .section .slide-content {
+    justify-content: center;
+    gap: clamp(1rem, 2vw, 2rem);
+  }
+  .section .num-large {
+    font-family: var(--font-display);
+    font-size: clamp(10rem, 22vw, 20rem);
+    line-height: 0.85;
+    letter-spacing: -0.04em;
+    background: linear-gradient(180deg, var(--coral) 0%, var(--coral-deep) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .section h2 {
+    font-family: "Archivo Black", var(--font-ko);
+    font-size: clamp(2.5rem, 5.5vw, 4.4rem);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: var(--text-primary);
+  }
+  .section p {
+    font-family: var(--font-ko);
+    font-size: clamp(1.15rem, 1.7vw, 1.5rem);
+    color: var(--text-secondary);
+    max-width: 64ch;
+    line-height: 1.55;
+  }
+
+  /* ===========================================
+     COMPARE TABLE
+     =========================================== */
+  .compare-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: var(--bg-elev-1);
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    font-family: var(--font-ko);
+    font-size: var(--body-size);
+  }
+  .compare-table th, .compare-table td {
+    padding: clamp(0.7rem, 1.2vw, 1.1rem) clamp(0.9rem, 1.4vw, 1.3rem);
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    line-height: 1.45;
+  }
+  .compare-table thead th {
+    background: var(--bg-elev-2);
+    font-family: var(--font-display);
+    font-size: var(--tiny-size);
+    font-weight: normal;
+    letter-spacing: 0.14em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+  }
+  .compare-table tbody th {
+    width: 24%;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+  .compare-table td.ours {
+    background: var(--coral-soft);
+    color: var(--coral);
+    font-weight: 700;
+  }
+  .compare-table tr:last-child th,
+  .compare-table tr:last-child td { border-bottom: none; }
+
+  /* ===========================================
+     ROLES TABLE (slide 21)
+     =========================================== */
+  .roles-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: var(--bg-elev-1);
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    font-family: var(--font-ko);
+    font-size: clamp(0.92rem, 1.2vw, 1.15rem);
+  }
+  .roles-table th, .roles-table td {
+    padding: clamp(0.6rem, 1vw, 0.95rem) clamp(0.7rem, 1.1vw, 1.05rem);
+    text-align: left;
+    vertical-align: top;
+    border-bottom: 1px solid var(--border);
+    line-height: 1.45;
+    color: var(--text-secondary);
+  }
+  .roles-table thead th {
+    background: var(--bg-elev-2);
+    font-family: var(--font-display);
+    font-size: var(--tiny-size);
+    font-weight: normal;
+    letter-spacing: 0.12em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+  }
+  .roles-table td.period {
+    color: var(--coral);
+    font-weight: 700;
+    font-family: var(--font-display);
+    font-size: var(--small-size);
+  }
+  .roles-table td.milestone { color: var(--cream); font-weight: 600; }
+  .roles-table tr:last-child td { border-bottom: none; }
+
+  /* ===========================================
+     FLOW STEPS
+     =========================================== */
+  .flow {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--element-gap);
+  }
+  .flow-step {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: clamp(0.9rem, 1.4vw, 1.3rem);
+    display: flex; flex-direction: column; gap: 0.5rem;
+    position: relative;
+  }
+  .flow-step .step-no {
+    font-family: var(--font-display);
+    font-size: var(--tiny-size);
+    letter-spacing: 0.16em;
+    color: var(--coral);
+  }
+  .flow-step .step-title {
+    font-family: var(--font-ko);
+    font-weight: 700;
+    font-size: clamp(1.05rem, 1.4vw, 1.25rem);
+    color: var(--text-primary);
+    line-height: 1.3;
+  }
+  .flow-step .step-body {
+    font-family: var(--font-ko);
+    font-size: clamp(0.92rem, 1.15vw, 1.1rem);
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+  .flow-step.coral {
+    background: var(--coral);
+    border-color: transparent;
+  }
+  .flow-step.coral .step-no { color: rgba(26, 26, 26, 0.7); }
+  .flow-step.coral .step-title { color: var(--text-on-coral); }
+  .flow-step.coral .step-body { color: rgba(26, 26, 26, 0.78); }
+
+  /* ===========================================
+     TIMELINE CARDS
+     =========================================== */
+  .timeline {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--element-gap);
+  }
+  .tl-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: clamp(1rem, 1.5vw, 1.4rem);
+    display: flex; flex-direction: column;
+    gap: 0.6rem;
+    position: relative;
+  }
+  .tl-card .when {
+    font-family: var(--font-display);
+    font-size: var(--small-size);
+    letter-spacing: 0.1em;
+    color: var(--coral);
+  }
+  .tl-card .stage {
+    font-family: var(--font-ko);
+    font-weight: 800;
+    font-size: clamp(1.15rem, 1.55vw, 1.4rem);
+    color: var(--text-primary);
+    line-height: 1.25;
+  }
+  .tl-card ul {
+    list-style: none;
+    display: flex; flex-direction: column; gap: 0.4rem;
+    font-family: var(--font-ko);
+    font-size: clamp(0.9rem, 1.1vw, 1.05rem);
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+  .tl-card ul li {
+    padding-left: 0.85rem;
+    position: relative;
+  }
+  .tl-card ul li::before {
+    content: "";
+    position: absolute;
+    left: 0; top: 0.55em;
+    width: 4px; height: 4px;
+    background: var(--coral);
+    border-radius: 50%;
+  }
+  .tl-card .milestone {
+    margin-top: auto;
+    padding-top: 0.6rem;
+    border-top: 1px dashed var(--border);
+    font-family: var(--font-ko);
+    font-size: var(--tiny-size);
+    font-weight: 700;
+    color: var(--cream);
+    letter-spacing: 0.04em;
+  }
+
+  /* ===========================================
+     PERSONA SLIDE
+     =========================================== */
+  .persona-grid {
+    display: grid;
+    grid-template-columns: clamp(220px, 26vw, 320px) 1fr;
+    gap: var(--content-gap);
+    align-items: stretch;
+  }
+  .persona-info {
+    background: var(--bg-elev-1);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: clamp(1.2rem, 2vw, 2rem);
+    display: flex; flex-direction: column;
+    gap: clamp(0.5rem, 1vw, 1rem);
+  }
+  .persona-info h4 {
+    font-family: var(--font-ko);
+    font-weight: 800;
+    font-size: clamp(1.4rem, 2.1vw, 1.95rem);
+    color: var(--text-primary);
+  }
+  .persona-info .role {
+    font-family: var(--font-display);
+    font-size: var(--small-size);
+    letter-spacing: 0.1em;
+    color: var(--coral);
+    text-transform: uppercase;
+  }
+  .persona-info ul {
+    list-style: none;
+    display: flex; flex-direction: column;
+    gap: 0.5rem;
+  }
+  .persona-info ul li {
+    font-family: var(--font-ko);
+    font-size: var(--body-size);
+    color: var(--text-secondary);
+    line-height: 1.5;
+    padding-left: 1.1rem;
+    position: relative;
+  }
+  .persona-info ul li::before {
+    content: "—";
+    position: absolute;
+    left: 0; top: 0;
+    color: var(--coral);
+    font-weight: bold;
+  }
+
+  /* ===========================================
+     QUOTE / HIGHLIGHT BOX
+     =========================================== */
+  .quote-box {
+    background: var(--coral-soft);
+    border-left: 3px solid var(--coral);
+    padding: clamp(1rem, 1.4vw, 1.4rem) clamp(1.2rem, 1.6vw, 1.6rem);
+    border-radius: 0 12px 12px 0;
+    color: var(--text-primary);
+    font-family: var(--font-ko);
+    font-size: var(--body-size);
+    line-height: 1.6;
+  }
+  .quote-box strong { color: var(--coral); }
+
+  /* ===========================================
+     BADGES (TECH STACK)
+     =========================================== */
+  .badges {
+    display: grid;
+    gap: 0.5rem;
+  }
+  .badge {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: clamp(0.7rem, 1.05vw, 1rem) clamp(0.8rem, 1.15vw, 1.1rem);
+    text-align: center;
+    font-family: var(--font-body);
+    font-size: clamp(0.9rem, 1.15vw, 1.1rem);
+    font-weight: 600;
+    color: var(--text-primary);
+    letter-spacing: 0.02em;
+  }
+  .badge.lang {
+    background: var(--coral);
+    color: var(--text-on-coral);
+    border-color: transparent;
+  }
+  .badge.tool {
+    background: var(--cream-soft);
+    color: var(--cream);
+    border-color: rgba(245, 230, 211, 0.18);
+  }
+
+  /* Badges row in slide 17 */
+  .badges-block { display: flex; flex-direction: column; gap: 0.6rem; }
+  .badges-block .lbl {
+    font-family: var(--font-display);
+    font-size: var(--tiny-size);
+    letter-spacing: 0.16em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+  }
+
+  /* ===========================================
+     EFFECT BLOCKS (slide 22)
+     =========================================== */
+  .effect {
+    background: var(--bg-elev-1);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: clamp(1.2rem, 1.8vw, 1.8rem);
+    display: flex; gap: clamp(0.8rem, 1.4vw, 1.4rem);
+  }
+  .effect .ico {
+    width: clamp(40px, 4vw, 56px);
+    height: clamp(40px, 4vw, 56px);
+    border-radius: 12px;
+    background: var(--coral-soft);
+    color: var(--coral);
+    display: flex; align-items: center; justify-content: center;
+    font-size: clamp(1.2rem, 1.8vw, 1.6rem);
+    font-weight: 800;
+    flex-shrink: 0;
+    border: 1px solid var(--coral-line);
+  }
+  .effect.cream .ico {
+    background: var(--cream-soft);
+    color: var(--cream);
+    border-color: rgba(245, 230, 211, 0.2);
+  }
+  .effect h4 {
+    font-family: var(--font-ko);
+    font-weight: 800;
+    font-size: clamp(1.2rem, 1.7vw, 1.5rem);
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+  }
+  .effect p {
+    font-family: var(--font-ko);
+    font-size: var(--body-size);
+    color: var(--text-secondary);
+    line-height: 1.55;
+  }
+
+  /* ===========================================
+     MEMBER CARDS (slide 23)
+     =========================================== */
+  .member {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: clamp(1rem, 1.5vw, 1.4rem);
+    display: flex; flex-direction: column;
+    gap: 0.6rem;
+    height: 100%;
+  }
+  .member .role-tag {
+    align-self: flex-start;
+    background: var(--coral);
+    color: var(--text-on-coral);
+    font-family: var(--font-display);
+    font-size: var(--tiny-size);
+    font-weight: normal;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.3rem 0.7rem;
+    border-radius: 100px;
+  }
+  .member.cream .role-tag {
+    background: var(--cream);
+    color: var(--text-on-coral);
+  }
+  .member.outline .role-tag {
+    background: transparent;
+    color: var(--coral);
+    border: 1px solid var(--coral-line);
+  }
+  .member h4 {
+    font-family: var(--font-ko);
+    font-weight: 800;
+    font-size: clamp(1.1rem, 1.4vw, 1.3rem);
+    color: var(--text-primary);
+    line-height: 1.3;
+  }
+  .member p {
+    font-family: var(--font-ko);
+    font-size: clamp(0.92rem, 1.15vw, 1.1rem);
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  /* ===========================================
+     CLOSING
+     =========================================== */
+  .closing {
+    background:
+      radial-gradient(900px 500px at 100% 0%, rgba(255, 87, 34, 0.18), transparent 55%),
+      radial-gradient(900px 500px at 0% 100%, rgba(255, 87, 34, 0.10), transparent 55%),
+      var(--bg-primary);
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+  }
+  .closing .slide-content {
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+  }
+  .closing h1 {
+    font-family: "Archivo Black", var(--font-ko);
+    font-size: clamp(3.5rem, 8.5vw, 7.5rem);
+    line-height: 0.95;
+    letter-spacing: -0.025em;
+    color: var(--text-primary);
+  }
+  .closing h1 .accent {
+    background: linear-gradient(180deg, var(--coral), var(--coral-deep));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .closing p {
+    font-family: var(--font-ko);
+    font-size: clamp(1.2rem, 1.8vw, 1.55rem);
+    color: var(--text-secondary);
+    line-height: 1.5;
+    max-width: 64ch;
+  }
+
+  /* ===========================================
+     ANIMATIONS — IntersectionObserver-driven
+     =========================================== */
+  .reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition:
+      opacity var(--duration-normal) var(--ease-out-expo),
+      transform var(--duration-normal) var(--ease-out-expo);
+  }
+  .slide.visible .reveal { opacity: 1; transform: translateY(0); }
+
+  .slide.visible .reveal:nth-child(1) { transition-delay: 0.05s; }
+  .slide.visible .reveal:nth-child(2) { transition-delay: 0.15s; }
+  .slide.visible .reveal:nth-child(3) { transition-delay: 0.25s; }
+  .slide.visible .reveal:nth-child(4) { transition-delay: 0.35s; }
+  .slide.visible .reveal:nth-child(5) { transition-delay: 0.45s; }
+  .slide.visible .reveal:nth-child(6) { transition-delay: 0.55s; }
+
+  /* Stagger inside grids */
+  .stagger > * {
+    opacity: 0;
+    transform: translateY(20px);
+    transition:
+      opacity 0.6s var(--ease-out-expo),
+      transform 0.6s var(--ease-out-expo);
+  }
+  .slide.visible .stagger > *:nth-child(1) { transition-delay: 0.10s; opacity: 1; transform: translateY(0); }
+  .slide.visible .stagger > *:nth-child(2) { transition-delay: 0.20s; opacity: 1; transform: translateY(0); }
+  .slide.visible .stagger > *:nth-child(3) { transition-delay: 0.30s; opacity: 1; transform: translateY(0); }
+  .slide.visible .stagger > *:nth-child(4) { transition-delay: 0.40s; opacity: 1; transform: translateY(0); }
+  .slide.visible .stagger > *:nth-child(5) { transition-delay: 0.50s; opacity: 1; transform: translateY(0); }
+  .slide.visible .stagger > *:nth-child(6) { transition-delay: 0.60s; opacity: 1; transform: translateY(0); }
+
+  /* Section number entrance */
+  .section .num-large {
+    opacity: 0;
+    transform: scale(0.92);
+    transition: opacity 0.9s var(--ease-out-expo), transform 0.9s var(--ease-out-expo);
+  }
+  .slide.visible .num-large { opacity: 1; transform: scale(1); }
+
+  /* ===========================================
+     UI: Progress bar + Nav dots
+     =========================================== */
+  .progress-bar {
+    position: fixed;
+    top: 0; left: 0;
+    height: 3px;
+    width: 0%;
+    background: linear-gradient(90deg, var(--coral), var(--coral-deep));
+    z-index: 100;
+    transition: width 0.2s linear;
+  }
+  .nav-dots {
+    position: fixed;
+    right: clamp(0.8rem, 1.6vw, 1.6rem);
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex; flex-direction: column;
+    gap: 0.5rem;
+    z-index: 90;
+  }
+  .nav-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.18);
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.3s;
+  }
+  .nav-dot:hover { background: rgba(255, 255, 255, 0.4); }
+  .nav-dot.active {
+    background: var(--coral);
+    transform: scale(1.5);
+  }
+  .keyboard-hint {
+    position: fixed;
+    bottom: clamp(1rem, 1.6vw, 1.6rem);
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--font-display);
+    font-size: var(--tiny-size);
+    letter-spacing: 0.16em;
+    color: var(--text-muted);
+    background: rgba(15, 15, 16, 0.6);
+    backdrop-filter: blur(8px);
+    padding: 0.5rem 0.9rem;
+    border-radius: 100px;
+    border: 1px solid var(--border);
+    z-index: 90;
+    transition: opacity 0.4s;
+  }
+  .keyboard-hint.hidden { opacity: 0; pointer-events: none; }
+
+  /* Print mode (PDF export) */
+  @media print {
+    html, body { background: #000; }
+    .slide { page-break-after: always; box-shadow: none; }
+    .progress-bar, .nav-dots, .keyboard-hint { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- PROGRESS BAR + NAV DOTS + KEYBOARD HINT -->
+<div class="progress-bar"></div>
+<nav class="nav-dots" aria-label="슬라이드 네비게이션"></nav>
+<div class="keyboard-hint" id="kbHint">← → · F (FULLSCREEN) · SCROLL · TOUCH</div>
+
+<!-- =============================================
+     1. COVER
+     ============================================= -->
+<section class="slide cover">
+  <div class="brand-mark"><span class="dot"></span>SIRLAB / HANDONG</div>
+  <div class="page-no"><b>01</b> / 14</div>
+
+  <div class="cover-grid">
+    <div class="cover-card reveal">
+      <h1>로봇팔의<br/>ChatGPT.</h1>
+      <p class="tag">자연어 명령 한 마디로 협동로봇을 즉시 운용하는 제조사 독립적 SaaS 플랫폼</p>
+    </div>
+
+    <div class="cover-meta-card reveal">
+      <div>
+        <div class="lbl">TEAM</div>
+        <div class="v">SirLab</div>
+        <div class="small" style="margin-top:0.2rem;">한동대학교 AI컴퓨터전자공학부</div>
+      </div>
+      <div class="divider"></div>
+      <div>
+        <div class="lbl">MEMBERS</div>
+        <div class="v">김도경 · 김유영 · 유재혁</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================
+     2. SECTION 1
+     ============================================= -->
+<section class="slide section">
+  
+  <div class="page-no"><b>02</b> / 14</div>
+
+  <div class="slide-content" style="align-items:flex-start;">
+    <div class="num-large reveal">01</div>
+    <h2 class="reveal">도전 배경 및 목적</h2>
+    <p class="reveal">연구실에서 마주친 불편함이, 어떻게 산업 현장의 문제로 이어졌는가</p>
+  </div>
+</section>
+
+<!-- =============================================
+     4. 1.1 배경
+     ============================================= -->
+<section class="slide">
+  
+  <div class="page-no"><b>03</b> / 14</div>
+
+  <div class="slide-content">
+    <span class="eyebrow reveal">아이디어 제안 배경</span>
+    <h2 class="title reveal">"우리가 어렵다면, 현장은 더 어렵지 않을까?"</h2>
+
+    <div class="grid-2 stagger" style="margin-top: clamp(0.6rem, 1.5vw, 1.2rem);">
+      <div class="stack" style="gap: clamp(0.5rem, 1vw, 1rem);">
+        <div class="card">
+          <h4>연구실에서의 경험</h4>
+          <p>VR 기기 · ROS2 · Isaac Sim을 연결해 로봇팔을 제어하기까지, 컴공 전공자에게도 환경 설정이 길고 복잡했습니다.</p>
+        </div>
+        <div class="card outline">
+          <h4>현장으로 옮긴 질문</h4>
+          <p>"실제 기업·공장에서 로봇을 활용할 때는 어떨까?" 중소 제조현장은 작업이 바뀔 때마다 SI업체를 섭외해야 하고, 그 사이 생산이 멈춥니다.</p>
+        </div>
+        <div class="card coral">
+          <h4>문제의 핵심</h4>
+          <p>로봇을 다루는 언어가 사람의 언어와 너무 동떨어져 있다는 것. <strong>LLM이 그 간극을 좁힐 수 있다.</strong></p>
+        </div>
+      </div>
+
+      <figure style="margin: 0; border-radius: 14px; overflow: hidden; border: 1px solid var(--border); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35); display: flex; flex-direction: column; min-height: clamp(280px, 50vh, 460px);">
+        <img src="images/china-industrial-robot.jpg"
+             alt="중국 자동차 공장의 산업용 로봇팔 — 단일 반복 작업에 묶인 협동로봇의 현실"
+             style="width: 100%; height: 100%; object-fit: cover; display: block; flex: 1; min-height: 0;" />
+        <figcaption style="background: var(--bg-elev-1); padding: clamp(0.6rem, 1vw, 1rem) clamp(0.9rem, 1.4vw, 1.4rem); font-family: var(--font-ko); font-size: var(--small-size); color: var(--text-secondary); line-height: 1.5; border-top: 1px solid var(--border);">
+          <span style="color: var(--coral); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; font-size: var(--tiny-size);">FIELD</span>
+          &nbsp;&nbsp;단일 작업에 고정된 산업용 로봇팔 — 우리가 풀려는 문제의 풍경
+        </figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================
+     5. 1.2 핵심 요약
+     ============================================= -->
+<section class="slide">
+  
+  <div class="page-no"><b>04</b> / 14</div>
+
+  <div class="slide-content">
+    <span class="eyebrow reveal">아이디어 핵심 요약</span>
+    <h2 class="title reveal">자연어 한 마디로 즉시 동작하는 로봇 SaaS</h2>
+    <p class="lead reveal">두 개의 레이어와 하나의 어댑터로 구성된 단순한 구조.</p>
+
+    <div class="grid-3 stagger" style="margin-top: clamp(0.4rem, 1vw, 0.8rem);">
+      <div class="card coral">
+        <div class="num-tag">1</div>
+        <h4>LLM 통역 레이어</h4>
+        <p>음성·텍스트 명령을 Gemini Robotics-ER API가 해석해 제어 코드를 즉시 생성·실행. <strong>별도 학습 없이</strong> 작동.</p>
+      </div>
+      <div class="card">
+        <div class="num-tag">2</div>
+        <h4>정밀 제어 레이어</h4>
+        <p>섬세한 물체 조작·정밀 위치가 필요한 경우, OpenVLA 모델을 사용자 환경에 맞게 <strong>파인튜닝</strong>해 배포.</p>
+      </div>
+      <div class="card outline">
+        <div class="num-tag">3</div>
+        <h4>로봇팔 어댑터 레이어</h4>
+        <p>Indy7 · UR · Franka의 서로 다른 API와 좌표계를 <strong>하나의 인터페이스</strong>로 통일.</p>
+      </div>
+    </div>
+
+    <!-- 2-image row: robollm (landscape, high-level flow) + flow (portrait, detailed architecture)
+         flex: 1 + min-height: 0 으로 슬라이드 남는 수직 공간을 모두 사용하고,
+         각 컨테이너는 stretch로 같은 높이를 갖되 이미지는 object-fit: contain으로
+         자기 비율을 유지한 채 컨테이너 안에 들어감 -->
+    <div class="reveal" style="
+      display: grid;
+      grid-template-columns: 1.55fr 1fr;
+      gap: clamp(0.7rem, 1.2vw, 1.2rem);
+      flex: 1;
+      min-height: 0;
+      align-items: stretch;
+      margin-top: clamp(0.4rem, 0.9vw, 0.9rem);
+    ">
+      <!-- LEFT: robollm.png (landscape, 자연어 → AI → 제어 코드 → 실행 흐름) -->
+      <div style="background: #ffffff; border-radius: 14px; padding: clamp(0.7rem, 1.1vw, 1.1rem) clamp(0.9rem, 1.4vw, 1.4rem); display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 28px rgba(0, 0, 0, 0.3); min-height: 0;">
+        <img src="images/robollm.png"
+             alt="3-레이어 시스템 아키텍처: 현장 작업자 자연어 명령 → AI(LLM) → 로봇 제어 코드 → 로봇 실행"
+             style="width: 100%; height: auto; max-height: 100%; object-fit: contain; display: block;" />
+      </div>
+
+      <!-- RIGHT: flow.png (portrait, 상세 3-레이어 아키텍처) -->
+      <div style="background: #ffffff; border-radius: 14px; padding: clamp(0.5rem, 0.9vw, 0.9rem); display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 28px rgba(0, 0, 0, 0.3); min-height: 0;">
+        <img src="images/flow.png"
+             alt="상세 시스템 아키텍처: LLM 통역 레이어 (Gemini Robotics-ER) + 정밀 제어 레이어 (OpenVLA) + 로봇팔 어댑터 레이어"
+             style="max-width: 100%; max-height: 100%; height: auto; object-fit: contain; display: block;" />
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================
+     6. 1.3 문제
+     ============================================= -->
+<section class="slide">
+  
+  <div class="page-no"><b>05</b> / 14</div>
+
+  <div class="slide-content">
+    <span class="eyebrow reveal">해결하고자 하는 문제</span>
+    <h2 class="title reveal">"로봇을 샀지만 자유롭게 못 쓴다"</h2>
+
+    <!-- 이미지 영역 제거 — 전폭 사용: 풀폭 quote-box 위, 2-컬럼 카드 아래 -->
+    <div class="reveal" style="margin-top: clamp(0.4rem, 1vw, 1rem);">
+      <div class="quote-box">
+        작업이 바뀔 때마다 <strong>SI업체 섭외</strong> · 생산라인 정지.<br/>
+        로봇 전문 인력은 인건비 부담, 매번 외주는 비용·대기 시간이 도입 효과를 반감.
+        결국 <strong>수천만 원짜리 로봇이 단 하나의 반복 작업만</strong> 수행하는 고정 기계로 전락.
+      </div>
+    </div>
+
+    <div class="grid-2 stagger" style="margin-top: clamp(0.5rem, 1.1vw, 1.2rem);">
+      <div class="card">
+        <h4>근본 원인</h4>
+        <p>로봇은 <em>좌표·관절 각도·제조사별 API</em>로 말하고, 작업자는 <em>"저 부품 집어서 오른쪽 박스에 넣어"</em>라고 말한다. 그 사이를 메우려 사람이 필요했다.</p>
+      </div>
+      <div class="card coral">
+        <h4>우리의 접근</h4>
+        <p>이 통역 역할을 <strong>AI가 대신</strong>한다. 자연어를 제어 코드로 즉시 변환해, 전문 인력 없이도 현장 작업자가 직접 로봇 작업을 바꾸고 운용한다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================
+     7. SECTION 2
+     ============================================= -->
+<section class="slide section">
+  
+  <div class="page-no"><b>06</b> / 14</div>
+
+  <div class="slide-content" style="align-items:flex-start;">
+    <div class="num-large reveal">02</div>
+    <h2 class="reveal">아이디어 상세 및 차별점</h2>
+    <p class="reveal">사용자가 실제로 경험하는 시나리오와, 우리만의 차별 포인트</p>
+  </div>
+</section>
+
+<!-- =============================================
+     15. 2.3 AI 활용 계획
+     ============================================= -->
+<section class="slide">
+  
+  <div class="page-no"><b>07</b> / 14</div>
+
+  <div class="slide-content">
+    <span class="eyebrow reveal">인공지능 활용 계획</span>
+    <h2 class="title reveal">단계별로 다른 AI 모델을 조합</h2>
+
+    <div class="grid-3 stagger" style="margin-top: clamp(0.6rem, 1.4vw, 1.2rem);">
+      <div class="card">
+        <span class="chip coral-outline">음성 입력</span>
+        <h4>Speech-to-Text</h4>
+        <p>Gemini Live API 또는 OpenAI Whisper로 현장 작업자의 음성 명령을 텍스트로 변환합니다.</p>
+      </div>
+      <div class="card coral">
+        <span class="chip" style="background:rgba(0,0,0,0.18); color:#1a1a1a; border-color:transparent;">상황 판단 · 단순 조작</span>
+        <h4>Gemini Robotics-ER 1.5</h4>
+        <p>장면을 이해하고 태스크를 분해해 제어 코드를 생성합니다. 대부분의 명령이 이 단계에서 해결.</p>
+      </div>
+      <div class="card outline">
+        <span class="chip cream">정밀 조작</span>
+        <h4>OpenVLA</h4>
+        <p>코드 생성만으론 어려운 파지·조립·삽입을 위해 사용자 환경에 맞춰 파인튜닝하여 배포.</p>
+      </div>
+    </div>
+
+    <div class="reveal" style="background: #ffffff; border-radius: 14px; padding: clamp(0.5rem, 0.9vw, 0.9rem) clamp(0.7rem, 1.2vw, 1.2rem); display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35); flex: 1; min-height: 0;">
+      <img src="images/ai-flow.png"
+           alt="AI 활용 계획 파이프라인: 음성 → STT(Gemini Live·Whisper) → 상황 판단 및 단순 조작(Gemini Robotics-ER) → 정밀 조작(OpenVLA) → 로봇 실행"
+           style="width: 100%; height: 100%; max-height: clamp(280px, 48vh, 540px); object-fit: contain; display: block;" />
+    </div>
+  </div>
+</section>
+
+<!-- =============================================
+     8. 2.1 페르소나
+     ============================================= -->
+<section class="slide">
+  
+  <div class="page-no"><b>08</b> / 14</div>
+
+  <div class="slide-content">
+    <span class="eyebrow reveal">사용자 시나리오 · 페르소나</span>
+    <h2 class="title reveal">중소 제조업체 사장 김철수 씨</h2>
+
+    <div class="persona-grid stagger" style="margin-top: clamp(0.4rem, 1vw, 0.8rem);">
+      <figure style="margin: 0; border-radius: 16px; overflow: hidden; border: 1px solid var(--border); box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4); position: relative; min-height: clamp(260px, 45vh, 400px); display: flex;">
+        <img src="images/persona.png"
+             alt="김철수 사장님 — 중소 제조업체 사장, 작업복 차림으로 공장 안에서 미소짓고 있다"
+             style="width: 100%; height: 100%; object-fit: cover; display: block; flex: 1; min-height: 0;" />
+        <!-- Gradient overlay + name tag at bottom -->
+        <div style="position: absolute; left: 0; right: 0; bottom: 0; padding: clamp(0.9rem, 1.4vw, 1.4rem); background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.85) 100%); display: flex; align-items: center; justify-content: space-between; gap: 0.6rem;">
+          <div>
+            <div style="font-family: var(--font-display); font-size: var(--tiny-size); letter-spacing: 0.18em; color: var(--coral);">PERSONA</div>
+            <div style="font-family: var(--font-ko); font-weight: 800; font-size: clamp(1.05rem, 1.4vw, 1.3rem); color: #ffffff; line-height: 1.2; margin-top: 0.15rem;">김철수 사장님</div>
+          </div>
+          <span style="background: var(--coral); color: var(--text-on-coral); font-family: var(--font-ko); font-weight: 700; font-size: clamp(0.78rem, 0.95vw, 0.92rem); padding: 0.3rem 0.7rem; border-radius: 100px;">50대 · 비개발자</span>
+        </div>
+      </figure>
+
+      <div class="persona-info">
+        <h4>김철수 · 50대 / 비개발자</h4>
+        <div class="role">중소 제조업체 운영 · 협동로봇팔 1대 보유</div>
+        <ul>
+          <li>지금까지는 전문 엔지니어에게 맡겨 <strong>특정 작업만 반복 실행</strong></li>
+          <li>새 작업을 추가할 때마다 <strong>외주비 수백만 원</strong> 발생</li>
+          <li>외주 대기 동안 라인이 멈춰 매출 손실 발생</li>
+          <li>"기술은 어렵고, 그래도 로봇은 더 잘 쓰고 싶다"</li>
+        </ul>
+        <div class="row" style="margin-top: 0.4rem;">
+          <span class="chip coral">로봇 활용도 ↑</span>
+          <span class="chip coral-outline">외주 비용 ↓</span>
+          <span class="chip cream">작업 전환 시간 ↓</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================
+     9. 2.1 첫 설치
+     ============================================= -->
+<section class="slide">
+  
+  <div class="page-no"><b>09</b> / 14</div>
+
+  <div class="slide-content">
+    <span class="eyebrow reveal">시나리오 · 첫 설치</span>
+    <h2 class="title reveal">웹 접속에서 사용 시작까지, <span style="color:var(--coral)">단 10분</span></h2>
+
+    <div class="flow stagger" style="margin-top: clamp(0.6rem, 1.5vw, 1.2rem);">
+      <div class="flow-step coral">
+        <div class="step-no">STEP 01</div>
+        <div class="step-title">웹사이트 접속</div>
+        <div class="step-body">서비스 사이트에서 보유한 로봇 모델을 선택합니다.</div>
+      </div>
+      <div class="flow-step">
+        <div class="step-no">STEP 02</div>
+        <div class="step-title">엣지 클라이언트 설치</div>
+        <div class="step-body">설치 후 로봇팔의 IP 주소만 입력하면 됩니다.</div>
+      </div>
+      <div class="flow-step">
+        <div class="step-no">STEP 03</div>
+        <div class="step-title">연결 테스트</div>
+        <div class="step-body">버튼 한 번 클릭으로 클라우드 ↔ 로봇 연결을 검증합니다.</div>
+      </div>
+      <div class="flow-step">
+        <div class="step-no">STEP 04</div>
+        <div class="step-title">API 키 발급 완료</div>
+        <div class="step-body">바로 자연어 명령을 시작할 수 있습니다.</div>
+      </div>
+    </div>
+
+    <!-- 직접 제작한 웹 온보딩 화면 mockup (HTML/CSS only)
+         - 브라우저 크롬 + 좌측 4-step 사이드바 + 중앙 폼 + 우측 모델 요약 패널
+         - STEP 2 (IP 입력) 활성 상태로, IP 입력 + 연결 성공 상태 표시
+         - 폭을 줄여 ~16:10 웹 화면 비율(landscape rectangle)에 맞춤, 가운데 정렬 -->
+    <div class="reveal" style="
+      background: linear-gradient(180deg, #18181b 0%, #1f1f22 100%);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 16px 44px rgba(0, 0, 0, 0.55);
+      display: flex; flex-direction: column;
+      min-height: clamp(280px, 42vh, 460px);
+      flex: 1;
+      width: 100%;
+      max-width: clamp(640px, 70vw, 880px);
+      margin-left: auto;
+      margin-right: auto;
+    ">
+      <!-- Browser chrome -->
+      <div style="
+        background: #0d0d0e;
+        padding: clamp(0.45rem, 0.7vw, 0.75rem) clamp(0.7rem, 1.1vw, 1.1rem);
+        display: flex; align-items: center; gap: clamp(0.5rem, 0.9vw, 0.9rem);
+        border-bottom: 1px solid var(--border);
+      ">
+        <div style="display: flex; gap: 0.4rem;">
+          <span style="width: 11px; height: 11px; border-radius: 50%; background: #ff5f57;"></span>
+          <span style="width: 11px; height: 11px; border-radius: 50%; background: #febc2e;"></span>
+          <span style="width: 11px; height: 11px; border-radius: 50%; background: #28c840;"></span>
+        </div>
+        <div style="
+          flex: 1; max-width: 420px;
+          background: var(--bg-elev-2);
+          border: 1px solid var(--border);
+          border-radius: 6px;
+          padding: 0.32rem 0.7rem;
+          font-family: 'Space Grotesk', monospace;
+          font-size: clamp(0.74rem, 0.92vw, 0.9rem);
+          color: var(--text-secondary);
+          letter-spacing: 0.01em;
+        ">🔒 console.robollm.app / onboard</div>
+        <span style="
+          font-family: var(--font-display);
+          font-size: clamp(0.6rem, 0.72vw, 0.72rem);
+          letter-spacing: 0.16em;
+          color: var(--text-muted);
+        ">SETUP</span>
+      </div>
+
+      <!-- App body: 3-col (steps · form · summary) -->
+      <div style="
+        flex: 1;
+        display: grid;
+        grid-template-columns: clamp(150px, 17vw, 220px) 1fr clamp(180px, 22vw, 280px);
+        min-height: 0;
+      ">
+        <!-- Step sidebar -->
+        <div style="
+          background: var(--bg-elev-1);
+          padding: clamp(1rem, 1.4vw, 1.4rem) clamp(0.9rem, 1.3vw, 1.3rem);
+          border-right: 1px solid var(--border);
+          display: flex; flex-direction: column;
+          gap: clamp(0.7rem, 1.1vw, 1.1rem);
+          font-family: var(--font-ko);
+          font-size: clamp(0.85rem, 1.05vw, 1rem);
+        ">
+          <div style="font-family: var(--font-display); font-size: clamp(0.7rem, 0.82vw, 0.82rem); color: var(--text-muted); letter-spacing: 0.14em; margin-bottom: 0.2rem;">SETUP STEPS</div>
+          <div style="display: flex; align-items: center; gap: 0.6rem; color: var(--text-secondary);">
+            <span style="width: 24px; height: 24px; border-radius: 50%; background: rgba(16, 185, 129, 0.18); border: 1px solid rgba(16, 185, 129, 0.5); color: #34d399; display: flex; align-items: center; justify-content: center; font-size: 0.78rem; font-weight: 800; flex-shrink: 0;">✓</span>
+            <span>모델 선택</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 0.6rem; color: var(--coral); font-weight: 700;">
+            <span style="width: 24px; height: 24px; border-radius: 50%; background: var(--coral); color: var(--text-on-coral); display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-size: 0.82rem; flex-shrink: 0; box-shadow: 0 0 0 3px rgba(255, 87, 34, 0.2);">2</span>
+            <span>IP 입력</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 0.6rem; color: var(--text-muted);">
+            <span style="width: 24px; height: 24px; border-radius: 50%; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-size: 0.82rem; flex-shrink: 0;">3</span>
+            <span>연결 테스트</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 0.6rem; color: var(--text-muted);">
+            <span style="width: 24px; height: 24px; border-radius: 50%; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-size: 0.82rem; flex-shrink: 0;">4</span>
+            <span>API 키 발급</span>
+          </div>
+        </div>
+
+        <!-- Main form panel -->
+        <div style="
+          padding: clamp(1rem, 1.6vw, 1.6rem) clamp(1.1rem, 1.8vw, 1.8rem);
+          display: flex; flex-direction: column;
+          gap: clamp(0.8rem, 1.2vw, 1.2rem);
+        ">
+          <div>
+            <div style="font-family: var(--font-ko); font-weight: 700; font-size: clamp(1.15rem, 1.55vw, 1.45rem); color: var(--text-primary); line-height: 1.2;">로봇 IP 주소 입력</div>
+            <div style="font-family: var(--font-ko); font-size: clamp(0.85rem, 1.05vw, 1rem); color: var(--text-muted); margin-top: 0.25rem;">엣지 클라이언트가 로봇과 통신할 IP·포트를 입력하세요.</div>
+          </div>
+
+          <!-- Focused IP input -->
+          <div style="
+            background: var(--bg-primary);
+            border: 1.5px solid var(--coral);
+            border-radius: 8px;
+            padding: clamp(0.7rem, 1.1vw, 1.1rem) clamp(0.95rem, 1.3vw, 1.3rem);
+            display: flex; align-items: center; gap: 0.85rem;
+            box-shadow: 0 0 0 3px rgba(255, 87, 34, 0.2);
+          ">
+            <span style="font-family: var(--font-display); font-size: clamp(0.72rem, 0.85vw, 0.85rem); color: var(--text-muted); letter-spacing: 0.16em;">IP</span>
+            <span style="font-family: 'Space Grotesk', monospace; font-weight: 600; font-size: clamp(1.1rem, 1.45vw, 1.35rem); color: var(--text-primary); letter-spacing: 0.02em;">192.168.0.124</span>
+            <span style="margin-left: auto; font-family: 'Space Grotesk', monospace; font-size: clamp(0.85rem, 1.05vw, 1rem); color: var(--text-muted);">:6066</span>
+          </div>
+
+          <!-- Diagnostic checklist -->
+          <div style="
+            background: var(--bg-elev-1);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: clamp(0.7rem, 1.05vw, 1.05rem) clamp(0.85rem, 1.2vw, 1.2rem);
+            display: flex; flex-direction: column;
+            gap: clamp(0.4rem, 0.65vw, 0.65rem);
+            font-family: var(--font-ko);
+            font-size: clamp(0.82rem, 1vw, 0.95rem);
+          ">
+            <div style="font-family: var(--font-display); font-size: clamp(0.7rem, 0.82vw, 0.82rem); color: var(--text-muted); letter-spacing: 0.14em; margin-bottom: 0.15rem;">DIAGNOSTICS</div>
+            <div style="display: flex; align-items: center; gap: 0.55rem; color: var(--text-secondary);">
+              <span style="color: #34d399; font-weight: 800;">✓</span>
+              <span>네트워크 도달 가능</span>
+              <span style="margin-left: auto; font-family: 'Space Grotesk', monospace; color: var(--text-muted); font-size: 0.88em;">17 ms</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.55rem; color: var(--text-secondary);">
+              <span style="color: #34d399; font-weight: 800;">✓</span>
+              <span>Indy SDK 핸드셰이크 성공</span>
+              <span style="margin-left: auto; font-family: 'Space Grotesk', monospace; color: var(--text-muted); font-size: 0.88em;">v3.2.1</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.55rem; color: var(--text-secondary);">
+              <span style="color: #34d399; font-weight: 800;">✓</span>
+              <span>관절 상태 응답 정상</span>
+              <span style="margin-left: auto; font-family: 'Space Grotesk', monospace; color: var(--text-muted); font-size: 0.88em;">6/6 OK</span>
+            </div>
+          </div>
+
+          <!-- CTA row -->
+          <div style="display: flex; align-items: center; gap: 0.7rem; margin-top: auto;">
+            <button style="
+              background: var(--coral); color: var(--text-on-coral);
+              border: none; border-radius: 8px;
+              padding: clamp(0.55rem, 0.85vw, 0.85rem) clamp(1rem, 1.5vw, 1.5rem);
+              font-family: var(--font-ko); font-weight: 700;
+              font-size: clamp(0.85rem, 1.05vw, 1rem);
+              cursor: pointer; letter-spacing: 0.01em;
+            ">다음 단계 →</button>
+            <button style="
+              background: transparent; color: var(--text-secondary);
+              border: 1px solid var(--border); border-radius: 8px;
+              padding: clamp(0.55rem, 0.85vw, 0.85rem) clamp(0.9rem, 1.2vw, 1.2rem);
+              font-family: var(--font-ko); font-weight: 600;
+              font-size: clamp(0.85rem, 1.05vw, 1rem);
+              cursor: pointer;
+            ">재테스트</button>
+          </div>
+        </div>
+
+        <!-- Right panel: model summary + status -->
+        <div style="
+          background: var(--bg-elev-1);
+          border-left: 1px solid var(--border);
+          padding: clamp(1rem, 1.4vw, 1.4rem) clamp(0.9rem, 1.3vw, 1.3rem);
+          display: flex; flex-direction: column;
+          gap: clamp(0.7rem, 1vw, 1rem);
+        ">
+          <!-- Status pill -->
+          <div style="
+            display: inline-flex; align-self: flex-start;
+            align-items: center; gap: 0.5rem;
+            background: rgba(16, 185, 129, 0.14);
+            border: 1px solid rgba(16, 185, 129, 0.42);
+            color: #34d399;
+            font-family: var(--font-ko);
+            font-size: clamp(0.78rem, 0.92vw, 0.92rem);
+            font-weight: 700;
+            padding: 0.35rem 0.7rem;
+            border-radius: 100px;
+          ">
+            <span style="display: inline-flex; width: 8px; height: 8px; border-radius: 50%; background: #10b981; box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.3);"></span>
+            ONLINE
+          </div>
+
+          <!-- Robot summary -->
+          <div style="font-family: var(--font-display); font-size: clamp(0.7rem, 0.82vw, 0.82rem); color: var(--text-muted); letter-spacing: 0.14em;">SELECTED ROBOT</div>
+          <div>
+            <div style="font-family: var(--font-ko); font-weight: 800; font-size: clamp(1.05rem, 1.35vw, 1.3rem); color: var(--text-primary); line-height: 1.15;">Indy7</div>
+            <div style="font-family: var(--font-ko); font-size: clamp(0.78rem, 0.92vw, 0.92rem); color: var(--text-muted); margin-top: 0.15rem;">Neuromeka · 6-axis</div>
+          </div>
+
+          <!-- Spec rows -->
+          <div style="display: flex; flex-direction: column; gap: clamp(0.35rem, 0.55vw, 0.55rem); border-top: 1px dashed var(--border); padding-top: clamp(0.55rem, 0.8vw, 0.8rem); font-family: var(--font-ko); font-size: clamp(0.78rem, 0.95vw, 0.92rem);">
+            <div style="display: flex; justify-content: space-between; color: var(--text-muted);"><span>Reach</span><span style="font-family: 'Space Grotesk', monospace; color: var(--text-secondary); font-weight: 600;">1300 mm</span></div>
+            <div style="display: flex; justify-content: space-between; color: var(--text-muted);"><span>Payload</span><span style="font-family: 'Space Grotesk', monospace; color: var(--text-secondary); font-weight: 600;">7 kg</span></div>
+            <div style="display: flex; justify-content: space-between; color: var(--text-muted);"><span>Repeatability</span><span style="font-family: 'Space Grotesk', monospace; color: var(--text-secondary); font-weight: 600;">±0.05 mm</span></div>
+            <div style="display: flex; justify-content: space-between; color: var(--text-muted);"><span>Firmware</span><span style="font-family: 'Space Grotesk', monospace; color: var(--coral); font-weight: 700;">v3.2.1</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================
+     10. 2.1 일상 사용
+     ============================================= -->
+<section class="slide">
+  
+  <div class="page-no"><b>10</b> / 14</div>
+
+  <div class="slide-content">
+    <span class="eyebrow reveal">시나리오 · 일상적 사용</span>
+    <h2 class="title reveal">"빨간 부품만 골라 오른쪽 박스에 담아줘"</h2>
+    <div class="quote-box reveal">말 한마디로 시작 — 사용자는 내부 동작을 알 필요가 없습니다.</div>
+
+    <div class="flow stagger" style="margin-top: clamp(0.4rem, 1vw, 0.8rem);">
+      <div class="flow-step coral">
+        <div class="step-no">① LLM 분석</div>
+        <div class="step-title">Gemini Robotics-ER</div>
+        <div class="step-body">장면 분석 → 빨간 부품 3개 감지 · 태스크 분해 · 경로 계획 · 좌표 추출</div>
+      </div>
+      <div class="flow-step">
+        <div class="step-no">② 이동</div>
+        <div class="step-title">코드 생성 방식</div>
+        <div class="step-body">로봇팔이 부품 근처까지 이동합니다.</div>
+      </div>
+      <div class="flow-step">
+        <div class="step-no">③ 파지</div>
+        <div class="step-title">OpenVLA 정밀 제어</div>
+        <div class="step-body">실시간 카메라 이미지 기반 그리퍼 각도·힘 조절.</div>
+      </div>
+      <div class="flow-step">
+        <div class="step-no">④ 놓기</div>
+        <div class="step-title">코드 생성 방식</div>
+        <div class="step-body">박스 위치로 이동 후 놓기 동작 실행.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================
+     11. 2.1 예외 + 신규 작업
+     ============================================= -->
+<section class="slide">
+  
+  <div class="page-no"><b>11</b> / 14</div>
+
+  <div class="slide-content">
+    <span class="eyebrow reveal">시나리오 · 예외와 신규 작업</span>
+    <h2 class="title reveal">중간에 말 바꿔도 OK,<br/>처음 보는 작업도 시범으로 학습</h2>
+
+    <!-- 2-컬럼 레이아웃: 좌 = 2개 카드 스택, 우 = UI mockup (더 넓게) -->
+    <div class="stagger" style="
+      display: grid;
+      grid-template-columns: minmax(260px, 1fr) 1.7fr;
+      gap: clamp(0.9rem, 1.6vw, 1.6rem);
+      margin-top: clamp(0.6rem, 1.4vw, 1.2rem);
+      flex: 1;
+      align-items: stretch;
+      min-height: 0;
+    ">
+      <!-- LEFT: 2 cards stacked -->
+      <div style="display: flex; flex-direction: column; gap: clamp(0.7rem, 1.2vw, 1.2rem); min-height: 0;">
+        <div class="card coral" style="flex: 1;">
+          <span class="chip" style="background:rgba(0,0,0,0.18); color:#1a1a1a; border-color:transparent;">실시간 명령 변경</span>
+          <h4>"파란 것도 같이 담아줘"</h4>
+          <p>진행 중인 작업을 일시 정지하고, 명령을 재해석한 뒤 빨간 + 파란 부품을 모두 담는 것으로 자동 재계획·재개합니다.</p>
+        </div>
+        <div class="card outline" style="flex: 1;">
+          <span class="chip cream">처음 보는 작업</span>
+          <h4>"나사 4개를 구멍에 끼워줘"</h4>
+          <p>정밀 접촉 작업으로 판단되면 사용자에게 안내합니다. <em>"시범 동작 3회를 보여주시면 학습 후 실행합니다."</em> 시범 학습 후 자동 실행.</p>
+        </div>
+      </div>
+
+      <!-- RIGHT: 직접 제작한 명령 인터럽트 + 시범 학습 UI mockup
+           좌패널: 실시간 채팅 인터럽트 / 우패널: 시범 학습 녹화 -->
+      <div style="
+      background: linear-gradient(180deg, #18181b 0%, #1f1f22 100%);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 16px 44px rgba(0, 0, 0, 0.55);
+      display: flex; flex-direction: column;
+      width: 100%;
+      height: 100%;
+      min-height: 0;
+    ">
+      <!-- Browser chrome -->
+      <div style="
+        background: #0d0d0e;
+        padding: clamp(0.4rem, 0.65vw, 0.7rem) clamp(0.7rem, 1.05vw, 1.05rem);
+        display: flex; align-items: center; gap: clamp(0.5rem, 0.85vw, 0.85rem);
+        border-bottom: 1px solid var(--border);
+      ">
+        <div style="display: flex; gap: 0.4rem;">
+          <span style="width: 11px; height: 11px; border-radius: 50%; background: #ff5f57;"></span>
+          <span style="width: 11px; height: 11px; border-radius: 50%; background: #febc2e;"></span>
+          <span style="width: 11px; height: 11px; border-radius: 50%; background: #28c840;"></span>
+        </div>
+        <div style="
+          flex: 1; max-width: 380px;
+          background: var(--bg-elev-2);
+          border: 1px solid var(--border);
+          border-radius: 6px;
+          padding: 0.3rem 0.7rem;
+          font-family: 'Space Grotesk', monospace;
+          font-size: clamp(0.72rem, 0.88vw, 0.88rem);
+          color: var(--text-secondary);
+        ">🔒 console.robollm.app / run</div>
+        <span style="font-family: var(--font-display); font-size: clamp(0.6rem, 0.72vw, 0.72rem); letter-spacing: 0.16em; color: var(--text-muted);">RUNTIME</span>
+      </div>
+
+      <!-- Body: 2 panels -->
+      <div style="flex: 1; display: grid; grid-template-columns: 1fr 1fr; min-height: 0;">
+
+        <!-- LEFT: Command timeline / interrupt -->
+        <div style="border-right: 1px solid var(--border); padding: clamp(0.85rem, 1.3vw, 1.3rem) clamp(0.95rem, 1.4vw, 1.4rem); display: flex; flex-direction: column; gap: clamp(0.5rem, 0.85vw, 0.85rem); min-height: 0; overflow: hidden;">
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.5rem;">
+            <div style="font-family: var(--font-display); font-size: clamp(0.68rem, 0.82vw, 0.82rem); letter-spacing: 0.16em; color: var(--text-muted);">COMMAND TIMELINE</div>
+            <span style="display: inline-flex; align-items: center; gap: 0.35rem; font-family: var(--font-display); font-size: clamp(0.62rem, 0.74vw, 0.74rem); color: #34d399; letter-spacing: 0.1em;">
+              <span style="width: 7px; height: 7px; border-radius: 50%; background: #10b981; box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.25);"></span>LIVE
+            </span>
+          </div>
+
+          <!-- User msg -->
+          <div style="display: flex; gap: 0.55rem; align-items: flex-start;">
+            <span style="width: 22px; height: 22px; border-radius: 50%; background: var(--bg-elev-2); border: 1px solid var(--border); flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; font-family: var(--font-display); font-size: 0.7rem; color: var(--text-secondary);">김</span>
+            <div style="background: var(--bg-elev-2); border: 1px solid var(--border); border-radius: 10px 10px 10px 2px; padding: clamp(0.4rem, 0.65vw, 0.65rem) clamp(0.6rem, 0.85vw, 0.85rem); font-family: var(--font-ko); font-size: clamp(0.78rem, 0.95vw, 0.92rem); color: var(--text-primary); line-height: 1.4;">빨간 부품만 골라 오른쪽 박스에 담아줘</div>
+          </div>
+
+          <!-- AI executing status -->
+          <div style="display: flex; align-items: center; gap: 0.55rem; padding-left: clamp(1.6rem, 2.4vw, 2.4rem); font-family: var(--font-ko); font-size: clamp(0.74rem, 0.9vw, 0.88rem); color: var(--text-muted);">
+            <span style="width: 7px; height: 7px; border-radius: 50%; background: var(--coral); box-shadow: 0 0 0 3px rgba(255, 87, 34, 0.25);"></span>
+            실행 중 · <span style="font-family: 'Space Grotesk', monospace; color: var(--coral); font-weight: 700;">3 / 8</span> picks
+          </div>
+
+          <!-- User interrupt msg (highlighted) -->
+          <div style="display: flex; gap: 0.55rem; align-items: flex-start;">
+            <span style="width: 22px; height: 22px; border-radius: 50%; background: var(--coral-soft); border: 1px solid var(--coral-line); flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; font-family: var(--font-display); font-size: 0.7rem; color: var(--coral);">김</span>
+            <div style="background: var(--coral); border-radius: 10px 10px 10px 2px; padding: clamp(0.4rem, 0.65vw, 0.65rem) clamp(0.6rem, 0.85vw, 0.85rem); font-family: var(--font-ko); font-size: clamp(0.78rem, 0.95vw, 0.92rem); color: var(--text-on-coral); line-height: 1.4; font-weight: 600;">파란 것도 같이 담아줘
+              <span style="display: block; font-family: var(--font-display); font-size: 0.62rem; letter-spacing: 0.14em; color: rgba(0,0,0,0.55); margin-top: 0.15rem;">↳ INTERRUPT</span>
+            </div>
+          </div>
+
+          <!-- AI replan -->
+          <div style="display: flex; align-items: center; gap: 0.55rem; padding-left: clamp(1.6rem, 2.4vw, 2.4rem); font-family: var(--font-ko); font-size: clamp(0.74rem, 0.9vw, 0.88rem); color: #34d399;">
+            <span style="font-family: var(--font-display);">✦</span>
+            재계획 완료 · <span style="font-family: 'Space Grotesk', monospace; color: var(--text-primary); font-weight: 700;">9</span> 개 감지 후 재개
+          </div>
+        </div>
+
+        <!-- RIGHT: Demo learning -->
+        <div style="padding: clamp(0.85rem, 1.3vw, 1.3rem) clamp(0.95rem, 1.4vw, 1.4rem); display: flex; flex-direction: column; gap: clamp(0.5rem, 0.85vw, 0.85rem); min-height: 0;">
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.5rem;">
+            <div style="font-family: var(--font-display); font-size: clamp(0.68rem, 0.82vw, 0.82rem); letter-spacing: 0.16em; color: var(--text-muted);">DEMO LEARNING</div>
+            <span style="display: inline-flex; align-items: center; gap: 0.35rem; background: rgba(239, 68, 68, 0.14); border: 1px solid rgba(239, 68, 68, 0.4); color: #f87171; padding: 0.2rem 0.55rem; border-radius: 100px; font-family: var(--font-display); font-size: clamp(0.6rem, 0.72vw, 0.72rem); letter-spacing: 0.1em;">
+              <span style="width: 7px; height: 7px; border-radius: 50%; background: #ef4444; animation: blink 1.2s ease-in-out infinite;"></span>REC 00:12
+            </span>
+          </div>
+
+          <!-- Alert -->
+          <div style="background: var(--coral-soft); border: 1px solid var(--coral-line); border-radius: 8px; padding: clamp(0.5rem, 0.8vw, 0.8rem) clamp(0.7rem, 1vw, 1rem); display: flex; gap: 0.5rem; align-items: flex-start;">
+            <span style="color: var(--coral); font-weight: 800; font-size: 1.05rem; line-height: 1;">⚠</span>
+            <div>
+              <div style="font-family: var(--font-ko); font-weight: 700; font-size: clamp(0.78rem, 0.95vw, 0.92rem); color: var(--text-primary); line-height: 1.3;">정밀 접촉 작업 감지</div>
+              <div style="font-family: var(--font-ko); font-size: clamp(0.72rem, 0.88vw, 0.85rem); color: var(--text-secondary); margin-top: 0.15rem; line-height: 1.4;">"나사 4개를 구멍에 끼워줘" — 시범 <strong style="color: var(--coral);">3회</strong> 시연이 필요합니다</div>
+            </div>
+          </div>
+
+          <!-- Demo slots -->
+          <div style="display: flex; flex-direction: column; gap: clamp(0.3rem, 0.5vw, 0.5rem); font-family: var(--font-ko); font-size: clamp(0.78rem, 0.95vw, 0.92rem);">
+            <!-- Demo 1 -->
+            <div style="display: flex; align-items: center; gap: 0.5rem; background: var(--bg-elev-2); border: 1px solid var(--border); border-radius: 6px; padding: 0.4rem 0.7rem;">
+              <span style="width: 18px; height: 18px; border-radius: 50%; background: rgba(16, 185, 129, 0.18); border: 1px solid rgba(16, 185, 129, 0.5); color: #34d399; display: inline-flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 800;">✓</span>
+              <span style="color: var(--text-secondary);">Demo 1 — 시연 완료</span>
+              <span style="margin-left: auto; font-family: 'Space Grotesk', monospace; color: var(--text-muted); font-size: 0.85em;">8.4 s</span>
+            </div>
+            <!-- Demo 2 -->
+            <div style="display: flex; align-items: center; gap: 0.5rem; background: var(--bg-elev-2); border: 1px solid var(--border); border-radius: 6px; padding: 0.4rem 0.7rem;">
+              <span style="width: 18px; height: 18px; border-radius: 50%; background: rgba(16, 185, 129, 0.18); border: 1px solid rgba(16, 185, 129, 0.5); color: #34d399; display: inline-flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 800;">✓</span>
+              <span style="color: var(--text-secondary);">Demo 2 — 시연 완료</span>
+              <span style="margin-left: auto; font-family: 'Space Grotesk', monospace; color: var(--text-muted); font-size: 0.85em;">7.9 s</span>
+            </div>
+            <!-- Demo 3 (recording) -->
+            <div style="display: flex; align-items: center; gap: 0.5rem; background: var(--coral-soft); border: 1.5px solid var(--coral); border-radius: 6px; padding: 0.4rem 0.7rem; box-shadow: 0 0 0 3px rgba(255, 87, 34, 0.15);">
+              <span style="width: 18px; height: 18px; border-radius: 50%; background: var(--coral); color: var(--text-on-coral); display: inline-flex; align-items: center; justify-content: center; font-family: var(--font-display); font-size: 0.7rem;">3</span>
+              <span style="color: var(--coral); font-weight: 700;">녹화 중…</span>
+              <span style="margin-left: auto; font-family: 'Space Grotesk', monospace; color: var(--coral); font-weight: 600; font-size: 0.9em;">00:12</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- /right column (mockup) -->
+    </div>
+    <!-- /2-column grid -->
+  </div>
+</section>
+
+<!-- =============================================
+     12. 2.1 대시보드
+     ============================================= -->
+<section class="slide">
+  
+  <div class="page-no"><b>12</b> / 14</div>
+
+  <div class="slide-content">
+    <span class="eyebrow reveal">시나리오 · 웹 대시보드</span>
+    <h2 class="title reveal">한 화면에서 보는 작업 이력 · 즐겨찾기 · 사용량</h2>
+
+    <!-- 웹 대시보드 mockup (HTML/CSS only) — 16:9 웹 화면 비율로 가운데 정렬 -->
+    <div class="reveal" style="
+      background: linear-gradient(180deg, #18181b 0%, #1f1f22 100%);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 16px 44px rgba(0, 0, 0, 0.55);
+      display: flex; flex-direction: column;
+      width: 100%;
+      max-width: clamp(640px, 70vw, 880px);
+      aspect-ratio: 16 / 9;
+      margin-left: auto;
+      margin-right: auto;
+    ">
+      <!-- Browser chrome -->
+      <div style="
+        background: #0d0d0e;
+        padding: clamp(0.45rem, 0.7vw, 0.75rem) clamp(0.7rem, 1.1vw, 1.1rem);
+        display: flex; align-items: center; gap: clamp(0.5rem, 0.9vw, 0.9rem);
+        border-bottom: 1px solid var(--border);
+      ">
+        <div style="display: flex; gap: 0.4rem;">
+          <span style="width: 11px; height: 11px; border-radius: 50%; background: #ff5f57;"></span>
+          <span style="width: 11px; height: 11px; border-radius: 50%; background: #febc2e;"></span>
+          <span style="width: 11px; height: 11px; border-radius: 50%; background: #28c840;"></span>
+        </div>
+        <div style="
+          flex: 1; max-width: 460px;
+          background: var(--bg-elev-2);
+          border: 1px solid var(--border);
+          border-radius: 6px;
+          padding: 0.32rem 0.7rem;
+          font-family: 'Space Grotesk', monospace;
+          font-size: clamp(0.74rem, 0.92vw, 0.9rem);
+          color: var(--text-secondary);
+          letter-spacing: 0.01em;
+        ">🔒 console.robollm.app / dashboard</div>
+        <span style="font-family: var(--font-display); font-size: clamp(0.6rem, 0.72vw, 0.72rem); letter-spacing: 0.16em; color: var(--text-muted);">DASHBOARD</span>
+      </div>
+
+      <!-- Body: sidebar + main -->
+      <div style="flex: 1; display: grid; grid-template-columns: clamp(160px, 16vw, 210px) 1fr; min-height: 0;">
+
+        <!-- Sidebar -->
+        <div style="
+          background: var(--bg-elev-1);
+          border-right: 1px solid var(--border);
+          padding: clamp(0.9rem, 1.3vw, 1.3rem) clamp(0.8rem, 1.1vw, 1.1rem);
+          display: flex; flex-direction: column; gap: clamp(0.4rem, 0.6vw, 0.6rem);
+          font-family: var(--font-ko); font-size: clamp(0.85rem, 1.05vw, 1rem);
+        ">
+          <div style="display: flex; align-items: center; gap: 0.5rem; padding-bottom: clamp(0.6rem, 0.9vw, 0.9rem); border-bottom: 1px solid var(--border); margin-bottom: clamp(0.4rem, 0.6vw, 0.6rem);">
+            <span style="width: 22px; height: 22px; border-radius: 6px; background: var(--coral); display: inline-flex; align-items: center; justify-content: center; color: var(--text-on-coral); font-family: var(--font-display); font-size: 0.78rem;">S</span>
+            <span style="font-family: var(--font-display); font-size: clamp(0.75rem, 0.9vw, 0.9rem); color: var(--text-primary); letter-spacing: 0.08em;">SIRLAB</span>
+          </div>
+          <!-- Active item -->
+          <div style="display: flex; align-items: center; gap: 0.55rem; color: var(--coral); font-weight: 700; background: var(--coral-soft); padding: 0.45rem 0.65rem; border-radius: 6px;">
+            <span style="font-size: 0.95em;">▦</span><span>대시보드</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 0.55rem; color: var(--text-secondary); padding: 0.45rem 0.65rem;">
+            <span style="font-size: 0.95em; color: var(--text-muted);">≡</span><span>작업 히스토리</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 0.55rem; color: var(--text-secondary); padding: 0.45rem 0.65rem;">
+            <span style="font-size: 0.95em; color: var(--text-muted);">★</span><span>즐겨찾기 <span style="background: var(--coral); color: var(--text-on-coral); font-family: var(--font-display); font-size: 0.7rem; padding: 0.05rem 0.4rem; border-radius: 100px; margin-left: 0.3rem;">3</span></span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 0.55rem; color: var(--text-secondary); padding: 0.45rem 0.65rem;">
+            <span style="font-size: 0.95em; color: var(--text-muted);">⏱</span><span>사용량</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 0.55rem; color: var(--text-muted); padding: 0.45rem 0.65rem;">
+            <span style="font-size: 0.95em;">⚙</span><span>설정</span>
+          </div>
+        </div>
+
+        <!-- Main panel -->
+        <div style="padding: clamp(0.9rem, 1.4vw, 1.4rem) clamp(1.1rem, 1.6vw, 1.6rem); display: flex; flex-direction: column; gap: clamp(0.7rem, 1vw, 1rem); min-height: 0;">
+
+          <!-- Top header -->
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.8rem;">
+            <div>
+              <div style="font-family: var(--font-ko); font-weight: 800; font-size: clamp(1.15rem, 1.5vw, 1.4rem); color: var(--text-primary); line-height: 1.15;">오늘의 작업</div>
+              <div style="font-family: var(--font-ko); font-size: clamp(0.78rem, 0.95vw, 0.92rem); color: var(--text-muted); margin-top: 0.15rem;">2026.05.06 · 라인 A · Indy7</div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <div style="background: var(--bg-elev-2); border: 1px solid var(--border); border-radius: 6px; padding: 0.35rem 0.7rem; font-family: var(--font-ko); font-size: clamp(0.78rem, 0.92vw, 0.9rem); color: var(--text-muted);">🔍 작업 검색…</div>
+              <span style="width: 28px; height: 28px; border-radius: 50%; background: var(--coral); color: var(--text-on-coral); display: inline-flex; align-items: center; justify-content: center; font-family: var(--font-display); font-size: 0.78rem;">김</span>
+            </div>
+          </div>
+
+          <!-- KPI cards row -->
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(0.6rem, 1vw, 1rem);">
+            <!-- KPI 1 -->
+            <div style="background: var(--bg-elev-2); border: 1px solid var(--border); border-radius: 8px; padding: clamp(0.6rem, 0.95vw, 0.95rem) clamp(0.7rem, 1.05vw, 1.05rem);">
+              <div style="font-family: var(--font-display); font-size: clamp(0.65rem, 0.78vw, 0.78rem); color: var(--text-muted); letter-spacing: 0.14em;">EXECUTIONS</div>
+              <div style="display: flex; align-items: baseline; gap: 0.4rem; margin-top: 0.2rem;">
+                <span style="font-family: var(--font-display); font-size: clamp(1.4rem, 2vw, 1.85rem); color: var(--text-primary); letter-spacing: -0.02em;">24</span>
+                <span style="font-family: var(--font-ko); font-size: clamp(0.75rem, 0.88vw, 0.88rem); color: #34d399; font-weight: 700;">+18%</span>
+              </div>
+              <div style="font-family: var(--font-ko); font-size: clamp(0.72rem, 0.85vw, 0.85rem); color: var(--text-muted); margin-top: 0.1rem;">오늘 실행</div>
+            </div>
+            <!-- KPI 2 (with mini sparkline) -->
+            <div style="background: var(--bg-elev-2); border: 1px solid var(--border); border-radius: 8px; padding: clamp(0.6rem, 0.95vw, 0.95rem) clamp(0.7rem, 1.05vw, 1.05rem); position: relative;">
+              <div style="font-family: var(--font-display); font-size: clamp(0.65rem, 0.78vw, 0.78rem); color: var(--text-muted); letter-spacing: 0.14em;">SUCCESS RATE</div>
+              <div style="display: flex; align-items: baseline; gap: 0.4rem; margin-top: 0.2rem;">
+                <span style="font-family: var(--font-display); font-size: clamp(1.4rem, 2vw, 1.85rem); color: var(--coral); letter-spacing: -0.02em;">92<span style="font-size: 0.6em; color: var(--text-muted); margin-left: 0.1em;">%</span></span>
+              </div>
+              <!-- Mini bar visualization -->
+              <div style="display: flex; align-items: end; gap: 2px; height: clamp(20px, 3.5vh, 32px); margin-top: 0.35rem;">
+                <span style="flex: 1; background: var(--coral-line); height: 40%; border-radius: 1px;"></span>
+                <span style="flex: 1; background: var(--coral-line); height: 55%; border-radius: 1px;"></span>
+                <span style="flex: 1; background: var(--coral-line); height: 70%; border-radius: 1px;"></span>
+                <span style="flex: 1; background: var(--coral-line); height: 60%; border-radius: 1px;"></span>
+                <span style="flex: 1; background: var(--coral-line); height: 80%; border-radius: 1px;"></span>
+                <span style="flex: 1; background: var(--coral-line); height: 75%; border-radius: 1px;"></span>
+                <span style="flex: 1; background: var(--coral); height: 90%; border-radius: 1px;"></span>
+              </div>
+            </div>
+            <!-- KPI 3 -->
+            <div style="background: var(--bg-elev-2); border: 1px solid var(--border); border-radius: 8px; padding: clamp(0.6rem, 0.95vw, 0.95rem) clamp(0.7rem, 1.05vw, 1.05rem);">
+              <div style="font-family: var(--font-display); font-size: clamp(0.65rem, 0.78vw, 0.78rem); color: var(--text-muted); letter-spacing: 0.14em;">API CALLS</div>
+              <div style="display: flex; align-items: baseline; gap: 0.4rem; margin-top: 0.2rem;">
+                <span style="font-family: var(--font-display); font-size: clamp(1.4rem, 2vw, 1.85rem); color: var(--text-primary); letter-spacing: -0.02em;">1.2k</span>
+                <span style="font-family: var(--font-ko); font-size: clamp(0.72rem, 0.85vw, 0.85rem); color: var(--text-muted);">/ 5k</span>
+              </div>
+              <!-- Progress bar -->
+              <div style="height: 4px; background: var(--bg-primary); border-radius: 2px; overflow: hidden; margin-top: 0.5rem;">
+                <span style="display: block; width: 24%; height: 100%; background: linear-gradient(90deg, var(--coral), var(--coral-deep));"></span>
+              </div>
+              <div style="font-family: var(--font-ko); font-size: clamp(0.72rem, 0.85vw, 0.85rem); color: var(--text-muted); margin-top: 0.25rem;">이번달 사용량 · ₩4,800</div>
+            </div>
+          </div>
+
+          <!-- Recent activity table -->
+          <div style="background: var(--bg-elev-2); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; flex: 1; display: flex; flex-direction: column; min-height: 0;">
+            <div style="display: grid; grid-template-columns: 1.6fr 1fr 0.8fr 0.6fr; gap: 0.5rem; padding: clamp(0.45rem, 0.7vw, 0.7rem) clamp(0.7rem, 1.05vw, 1.05rem); border-bottom: 1px solid var(--border); font-family: var(--font-display); font-size: clamp(0.65rem, 0.78vw, 0.78rem); color: var(--text-muted); letter-spacing: 0.12em;">
+              <span>TASK</span><span>WHEN</span><span>RESULT</span><span style="text-align: right;">STATUS</span>
+            </div>
+            <div style="display: grid; grid-template-columns: 1.6fr 1fr 0.8fr 0.6fr; gap: 0.5rem; padding: clamp(0.5rem, 0.78vw, 0.78rem) clamp(0.7rem, 1.05vw, 1.05rem); border-bottom: 1px solid var(--border); font-family: var(--font-ko); font-size: clamp(0.78rem, 0.95vw, 0.92rem); color: var(--text-secondary); align-items: center;">
+              <span>빨간 부품 분류 → 박스 R</span>
+              <span style="font-family: 'Space Grotesk', monospace; color: var(--text-muted);">12:42</span>
+              <span style="font-family: 'Space Grotesk', monospace;">24 / 24</span>
+              <span style="text-align: right;"><span style="display: inline-flex; align-items: center; gap: 0.3rem; background: rgba(16, 185, 129, 0.14); color: #34d399; padding: 0.2rem 0.55rem; border-radius: 100px; font-family: var(--font-display); font-size: 0.7rem; letter-spacing: 0.08em;">✓ DONE</span></span>
+            </div>
+            <div style="display: grid; grid-template-columns: 1.6fr 1fr 0.8fr 0.6fr; gap: 0.5rem; padding: clamp(0.5rem, 0.78vw, 0.78rem) clamp(0.7rem, 1.05vw, 1.05rem); border-bottom: 1px solid var(--border); font-family: var(--font-ko); font-size: clamp(0.78rem, 0.95vw, 0.92rem); color: var(--text-secondary); align-items: center;">
+              <span>박스 정렬 (3-row)</span>
+              <span style="font-family: 'Space Grotesk', monospace; color: var(--text-muted);">12:08</span>
+              <span style="font-family: 'Space Grotesk', monospace;">18 / 18</span>
+              <span style="text-align: right;"><span style="display: inline-flex; align-items: center; gap: 0.3rem; background: rgba(16, 185, 129, 0.14); color: #34d399; padding: 0.2rem 0.55rem; border-radius: 100px; font-family: var(--font-display); font-size: 0.7rem; letter-spacing: 0.08em;">✓ DONE</span></span>
+            </div>
+            <div style="display: grid; grid-template-columns: 1.6fr 1fr 0.8fr 0.6fr; gap: 0.5rem; padding: clamp(0.5rem, 0.78vw, 0.78rem) clamp(0.7rem, 1.05vw, 1.05rem); font-family: var(--font-ko); font-size: clamp(0.78rem, 0.95vw, 0.92rem); color: var(--text-secondary); align-items: center;">
+              <span>나사 4개 삽입 (정밀)</span>
+              <span style="font-family: 'Space Grotesk', monospace; color: var(--text-muted);">11:51</span>
+              <span style="font-family: 'Space Grotesk', monospace; color: var(--coral);">5 / 8</span>
+              <span style="text-align: right;"><span style="display: inline-flex; align-items: center; gap: 0.3rem; background: var(--coral-soft); color: var(--coral); padding: 0.2rem 0.55rem; border-radius: 100px; font-family: var(--font-display); font-size: 0.7rem; letter-spacing: 0.08em; border: 1px solid var(--coral-line);">⚠ PARTIAL</span></span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 explanation cards (compact row) -->
+    <div class="grid-3 stagger" style="margin-top: clamp(0.4rem, 0.9vw, 0.9rem); gap: clamp(0.7rem, 1.2vw, 1.2rem);">
+      <div class="card">
+        <span class="chip coral-outline">작업 히스토리</span>
+        <h4>오늘 실행 목록 · 성공/실패</h4>
+        <p>실패 원인 분석을 자동으로 보여줘 다음 시도에 활용합니다.</p>
+      </div>
+      <div class="card coral">
+        <span class="chip" style="background:rgba(0,0,0,0.18); color:#1a1a1a; border-color:transparent;">저장된 작업</span>
+        <h4>"빨간 부품 분류" 즐겨찾기</h4>
+        <p>버튼 한 번이면 동일 작업을 다시 실행할 수 있습니다.</p>
+      </div>
+      <div class="card outline">
+        <span class="chip cream">사용량</span>
+        <h4>이번달 API 호출 · 요금</h4>
+        <p>비용을 투명하게 추적하고, 작업별 단가도 함께 확인합니다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================
+     13. 2.2 차별점 비교 표
+     ============================================= -->
+<template data-commented="2.2 창의성과 차별점">
+<section class="slide">
+  
+  <div class="page-no"><b>13</b> / 14</div>
+
+  <div class="slide-content">
+    <span class="eyebrow reveal">창의성과 차별점</span>
+    <h2 class="title reveal">기존 방식 vs. 우리 서비스</h2>
+
+    <table class="compare-table reveal" style="margin-top: clamp(0.6rem, 1.4vw, 1.2rem);">
+      <thead>
+        <tr>
+          <th>항목</th>
+          <th>기존 방식</th>
+          <th>우리 서비스</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>새 작업 추가</th>
+          <td>엔지니어 외주 · 수백만 원 · 수 주 소요</td>
+          <td class="ours">말 한마디 · 즉시 실행</td>
+        </tr>
+        <tr>
+          <th>필요 지식</th>
+          <td>로봇 프로그래밍 필수</td>
+          <td class="ours">없음 (자연어)</td>
+        </tr>
+        <tr>
+          <th>로봇팔 변경</th>
+          <td>처음부터 재프로그래밍</td>
+          <td class="ours">모델 선택만 변경</td>
+        </tr>
+        <tr>
+          <th>야간 무인 운영</th>
+          <td>사전 프로그래밍된 작업만</td>
+          <td class="ours">새 상황에 자율 대응</td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="small reveal" style="margin-top: clamp(0.6rem, 1.2vw, 1rem);">※ 글로벌 사례: Mbodi (자체 하드웨어 종속), Physical Intelligence π0 (연구 단계 범용 모델), Zeon (연구실 한정). 국내에는 동급 서비스가 부재.</p>
+  </div>
+</section>
+</template>
+
+<!-- =============================================
+     14. 2.2 차별점 3가지
+     ============================================= -->
+<template data-commented="2.2 우리만의 3가지 차별점">
+<section class="slide">
+  
+  <div class="page-no"><b>14</b> / 14</div>
+
+  <div class="slide-content">
+    <span class="eyebrow reveal">우리만의 3가지 차별점</span>
+    <h2 class="title reveal">제조사 독립 · 이중 티어 · 국내 최초 포지셔닝</h2>
+
+    <div class="grid-3 stagger" style="margin-top: clamp(0.6rem, 1.4vw, 1.2rem);">
+      <div class="card">
+        <div class="num-tag">01</div>
+        <h4>제조사 독립적 어댑터 레이어</h4>
+        <p>Indy7 · UR · Franka의 다른 API와 좌표계를 하나의 인터페이스로 통합. 사용자는 어떤 로봇팔을 쓰든 같은 방식으로 명령합니다.</p>
+      </div>
+      <div class="card coral">
+        <div class="num-tag">02</div>
+        <h4>이중 티어 구조</h4>
+        <p><strong>기본 티어:</strong> Gemini Robotics-ER 기반, 학습 없이 즉시 작동.<br/><strong>프리미엄 티어:</strong> OpenVLA 파인튜닝으로 정밀 조작 커버. 사용자가 필요에 따라 선택.</p>
+      </div>
+      <div class="card outline">
+        <div class="num-tag">03</div>
+        <h4>국내 최초 포지셔닝</h4>
+        <p>국내 1위 협동로봇 <strong>Indy7</strong>을 첫 타깃으로, 한국어 명령 처리와 국내 제조 현장 특화. 글로벌 영어/해외 로봇 중심 서비스 사이의 빈 공간을 선점합니다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+</template>
+
+<!-- =============================================
+     16. SECTION 3
+     ============================================= -->
+<template data-commented="구현 계획 및 추진일정">
+<section class="slide section">
+  
+  <div class="page-no"><b>15</b> / 14</div>
+
+  <div class="slide-content" style="align-items:flex-start;">
+    <div class="num-large reveal">03</div>
+    <h2 class="reveal">구현 계획 및 추진일정</h2>
+    <p class="reveal">활용 기술 스택, 예상되는 도전 과제, 그리고 5월부터 11월까지의 로드맵</p>
+  </div>
+</section>
+</template>
+
+<!-- =============================================
+     17. 3.1 기술 스택
+     ============================================= -->
+<template data-commented="3.1 구현 방법 및 활용 기술">
+<section class="slide">
+  
+  <div class="page-no"><b>16</b> / 14</div>
+
+  <div class="slide-content">
+    <span class="eyebrow reveal">구현 방법 및 활용 기술</span>
+    <h2 class="title reveal">우리가 다룰 기술 스택</h2>
+
+    <div class="badges-block reveal">
+      <div class="lbl">프로그래밍 언어</div>
+      <div class="badges" style="grid-template-columns: repeat(8, 1fr);">
+        <div class="badge lang">C++</div>
+        <div class="badge lang">Python</div>
+      </div>
+    </div>
+
+    <div class="badges-block reveal">
+      <div class="lbl">프레임워크 · 인프라</div>
+      <div class="badges" style="grid-template-columns: repeat(6, 1fr);">
+        <div class="badge">React</div>
+        <div class="badge">TypeScript</div>
+        <div class="badge">FastAPI</div>
+        <div class="badge">Docker</div>
+        <div class="badge">Supabase</div>
+        <div class="badge">Vercel</div>
+        <div class="badge">ROS2</div>
+        <div class="badge">OpenCV</div>
+        <div class="badge">Isaac Sim · Lab</div>
+        <div class="badge">Gemini Robotics-ER</div>
+        <div class="badge">OpenVLA</div>
+      </div>
+    </div>
+
+    <div class="badges-block reveal">
+      <div class="lbl">개발 도구</div>
+      <div class="badges" style="grid-template-columns: repeat(8, 1fr);">
+        <div class="badge tool">Claude Code</div>
+        <div class="badge tool">Google Stitch</div>
+      </div>
+    </div>
+
+    <p class="small reveal">※ 비전공자 팀원도 학습 일정에 따라 단계적으로 익혀나갈 예정입니다.</p>
+  </div>
+</section>
+</template>
+
+<!-- =============================================
+     18. 3.2 도전 과제 (1/2)
+     ============================================= -->
+<template data-commented="3.2 도전과제 및 해결방안 (1/2)">
+<section class="slide">
+  
+  <div class="page-no"><b>17</b> / 14</div>
+
+  <div class="slide-content">
+    <span class="eyebrow reveal">도전과제 및 해결방안 (1/2)</span>
+    <h2 class="title reveal">예측 가능한 난관과, 우리의 대응</h2>
+
+    <div class="grid-2 stagger" style="margin-top: clamp(0.6rem, 1.4vw, 1.2rem);">
+      <div class="card">
+        <span class="chip coral-outline">난관 1</span>
+        <h4>AI가 만든 코드가 실제 환경에서 작동하지 않는 문제</h4>
+        <p>카메라 캘리브레이션 오차, 작업 반경 초과, 그리퍼 각도 오류 등 물리적 제약과 충돌. 수 mm 오차도 파지 실패로 이어집니다.</p>
+        <div style="border-top:1px dashed var(--border); padding-top:0.8rem; margin-top:0.4rem;">
+          <span class="chip coral">해결</span>
+          <p style="margin-top:0.5rem;">Isaac Sim에서 IK 해 존재·충돌을 사전 검증 → RealSense 결과 확인 → 실패 시 자동 재시도. ChArUco 보드 기반 주 1회 캘리브레이션.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="chip coral-outline">난관 2</span>
+        <h4>자연어 명령의 모호성으로 인한 오작동 위험</h4>
+        <p>"오른쪽 부품 집어"는 사람에겐 명확하지만 LLM에겐 모호. 제조 현장에선 모호한 동작이 안전사고로 이어질 수 있습니다.</p>
+        <div style="border-top:1px dashed var(--border); padding-top:0.8rem; margin-top:0.4rem;">
+          <span class="chip coral">해결</span>
+          <p style="margin-top:0.5rem;">실행 전 의도 재확인(confirmation step) 기본 탑재. confidence threshold 이하 명령은 자동으로 추가 질문. 4주간 모호 명령 케이스를 직접 수집해 프롬프트 엔지니어링.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</template>
+
+<!-- =============================================
+     19. 3.2 도전 과제 (2/2)
+     ============================================= -->
+<template data-commented="3.2 도전과제 및 해결방안 (2/2)">
+<section class="slide">
+  
+  <div class="page-no"><b>18</b> / 14</div>
+
+  <div class="slide-content">
+    <span class="eyebrow reveal">도전과제 및 해결방안 (2/2)</span>
+    <h2 class="title reveal">제조사별 API 파편화, 그리고 동시 학습 부담</h2>
+
+    <div class="grid-2 stagger" style="margin-top: clamp(0.6rem, 1.4vw, 1.2rem);">
+      <div class="card coral">
+        <span class="chip" style="background:rgba(0,0,0,0.18); color:#1a1a1a; border-color:transparent;">난관 3</span>
+        <h4>제조사별 API · 좌표계 · 프로토콜 파편화</h4>
+        <p>Indy7(IndySDK) · UR(URScript) · Franka(libfranka)는 각각 완전히 다릅니다. 어댑터 레이어가 흔들리면 서비스 전체가 흔들립니다.</p>
+        <div style="border-top:1px dashed rgba(0,0,0,0.18); padding-top:0.8rem; margin-top:0.4rem;">
+          <p><strong>해결:</strong> 대회 기간엔 Indy7 단일 어댑터 안정화 → UR 추가 순서. ROS2 MoveIt2를 중간 계층으로 활용해 차이를 흡수. 뉴로메카 공식 문서 + 멘토링 적극 활용.</p>
+        </div>
+      </div>
+
+      <div class="card outline">
+        <span class="chip cream">동시 학습 부담</span>
+        <h4>AI · 하드웨어 · 클라우드 · 카메라 동시 개발</h4>
+        <p>하나만 해도 어려운 영역을 동시에 처음 다루기 때문에, 어디서 문제가 생겼는지 파악 자체가 난관입니다.</p>
+        <div style="border-top:1px dashed var(--border); padding-top:0.8rem; margin-top:0.4rem;">
+          <p><strong>해결:</strong> 처음엔 Isaac Sim 가상 환경에서 모든 기능을 검증. 시뮬은 되는데 실물에서 안 되면 → 하드웨어 문제, 시뮬에서도 안 되면 → 소프트웨어 문제로 빠르게 절단. 워크샵·세미나로 병목 조기 해결.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</template>
+
+<!-- =============================================
+     20. 3.3 추진일정 — 마일스톤
+     (원본 슬라이드 20을 두 장으로 분할: 마일스톤 / 역할 분담)
+     ============================================= -->
+<template data-commented="3.3 추진일정 · 5월~11월">
+<section class="slide">
+  
+  <div class="page-no"><b>19</b> / 14</div>
+
+  <div class="slide-content">
+    <span class="eyebrow reveal">추진일정 · 5월~11월</span>
+    <h2 class="title reveal">단계별 마일스톤</h2>
+
+    <div class="timeline stagger" style="margin-top: clamp(0.6rem, 1.4vw, 1.2rem);">
+      <div class="tl-card">
+        <div class="when">5–6월</div>
+        <div class="stage">핵심 프로토타입</div>
+        <ul>
+          <li>Gemini API + Indy7 연동</li>
+          <li>"말하면 블록 집기" 데모</li>
+          <li>Isaac Sim 병행 검증</li>
+        </ul>
+        <div class="milestone">▶ 데모 영상 촬영 완료</div>
+      </div>
+      <div class="tl-card">
+        <div class="when">7–8월</div>
+        <div class="stage">본선 제출물</div>
+        <ul>
+          <li>엣지/클라우드 분리</li>
+          <li>카메라 자동 캘리브레이션</li>
+          <li>분류·정렬·이동 구현</li>
+          <li>웹 대시보드 기본 기능</li>
+        </ul>
+        <div class="milestone">▶ 비전문가 명령 전환 성공</div>
+      </div>
+      <div class="tl-card">
+        <div class="when">9–10월</div>
+        <div class="stage">1차 결선 시제품</div>
+        <ul>
+          <li>OpenVLA 정밀 조작 통합</li>
+          <li>UR5 어댑터 추가</li>
+          <li>비상정지·충돌방지</li>
+          <li>음성 제어 통합</li>
+        </ul>
+        <div class="milestone">▶ Indy7 · UR5 동일 명령</div>
+      </div>
+      <div class="tl-card">
+        <div class="when">11월</div>
+        <div class="stage">최종 결선</div>
+        <ul>
+          <li>제조 분류 시나리오 시연</li>
+          <li>비전문가 라이브 테스트</li>
+          <li>최종 발표 · 데모</li>
+        </ul>
+        <div class="milestone">▶ 비전문가 5인 라이브 통과</div>
+      </div>
+    </div>
+  </div>
+</section>
+</template>
+
+<!-- =============================================
+     21. 3.3 역할 분담
+     (원본 슬라이드 20에서 분리)
+     ============================================= -->
+<template data-commented="3.3 추진일정 · 역할 분담">
+<section class="slide">
+  
+  <div class="page-no"><b>20</b> / 14</div>
+
+  <div class="slide-content">
+    <span class="eyebrow reveal">추진일정 · 역할 분담</span>
+    <h2 class="title reveal">기간별 팀원 역할 매트릭스</h2>
+
+    <table class="roles-table reveal" style="margin-top: clamp(0.6rem, 1.4vw, 1.2rem);">
+      <thead>
+        <tr>
+          <th>기간</th>
+          <th>팀원 A · 로봇 제어</th>
+          <th>팀원 B · AI/백엔드</th>
+          <th>팀원 C · 프론트/인프라</th>
+          <th>마일스톤</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="period">5–6월</td>
+          <td>Isaac Sim 환경 + Indy7 연동, 블록 파지 검증</td>
+          <td>Gemini ER 연결, 자연어→코드 파이프라인</td>
+          <td>FastAPI 기본 구조, Supabase DB 설계</td>
+          <td class="milestone">블록 파지 데모</td>
+        </tr>
+        <tr>
+          <td class="period">7–8월</td>
+          <td>캘리브레이션 자동화, 복수 태스크 구현</td>
+          <td>클라우드-엣지 분리, confidence 검증 로직</td>
+          <td>대시보드 · 이력/결과 시각화</td>
+          <td class="milestone">3종 작업 전환</td>
+        </tr>
+        <tr>
+          <td class="period">9–10월</td>
+          <td>UR5 어댑터, 안전장치 구현</td>
+          <td>OpenVLA 파인튜닝, 음성 입력</td>
+          <td>음성 UI 연동, 비전문가 테스트 환경</td>
+          <td class="milestone">2기종 동일 명령</td>
+        </tr>
+        <tr>
+          <td class="period">11월</td>
+          <td>실제 분류 작업, 현장 안정성 검증</td>
+          <td>전체 파이프라인 최적화·지연 최소화</td>
+          <td>라이브 테스트, 발표 자료</td>
+          <td class="milestone">라이브 테스트 통과</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+</template>
+
+<!-- =============================================
+     22. 4.1 기대효과
+     ============================================= -->
+<section class="slide">
+  
+  <div class="page-no"><b>13</b> / 14</div>
+
+  <div class="slide-content">
+    <span class="eyebrow reveal">기대효과</span>
+    <h2 class="title reveal">산업과 사회가 함께 얻는 가치</h2>
+
+    <div class="grid-2 stagger" style="margin-top: clamp(0.6rem, 1.4vw, 1.2rem);">
+      <div class="effect">
+        <div class="ico">↗</div>
+        <div>
+          <h4>산업적 측면</h4>
+          <p>SI업체 의존 비용·대기 시간이 대폭 감소합니다. 다품종 소량생산 환경에서 로봇 활용도가 높아지고, 다양한 로봇팔을 하나의 인터페이스로 운용하는 통합 플랫폼으로 발전할 수 있습니다.</p>
+        </div>
+      </div>
+      <div class="effect cream">
+        <div class="ico">＋</div>
+        <div>
+          <h4>사회적 측면</h4>
+          <p>로봇 전문 인력이 없는 중소기업도 자동화에 진입하게 되어, 대기업과의 자동화 격차를 줄입니다. 나아가 거동이 불편한 사용자가 음성으로 로봇팔을 제어하는 보조 도구, 장애인의 자립 지원 도구로 확장될 가능성을 가집니다.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================
+     14. 팀 소개 (성장목표 자리)
+     ============================================= -->
+<section class="slide">
+
+  <div class="page-no"><b>14</b> / 14</div>
+
+  <div class="slide-content">
+    <span class="eyebrow reveal">TEAM</span>
+    <h2 class="title reveal">팀 소개</h2>
+    <p class="lead reveal">SirLab — 한동대학교 AI컴퓨터전자공학부</p>
+
+    <div class="grid-3 stagger" style="margin-top: clamp(0.6rem, 1.4vw, 1.2rem); align-items: stretch; flex: 1; min-height: 0;">
+
+      <!-- 유재혁 — 팀장 -->
+      <div style="background: var(--bg-card); border: 1.5px solid var(--coral-line); border-radius: 14px; padding: clamp(1rem, 1.4vw, 1.4rem); display: flex; flex-direction: column; gap: clamp(0.7rem, 1.1vw, 1.1rem); box-shadow: 0 0 0 4px rgba(255, 87, 34, 0.06), 0 8px 24px rgba(0, 0, 0, 0.25);">
+        <!-- Profile photo placeholder -->
+        <div style="aspect-ratio: 1; border-radius: 12px; background: linear-gradient(135deg, var(--coral) 0%, var(--coral-deep) 100%); display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; overflow: hidden; gap: 0.4rem;">
+          <svg viewBox="0 0 24 24" style="width: clamp(40px, 5vw, 56px); height: auto; opacity: 0.85;" fill="rgba(255,255,255,0.92)" aria-hidden="true">
+            <circle cx="12" cy="8" r="4" />
+            <path d="M4 22 C4 15 7.5 13.5 12 13.5 C16.5 13.5 20 15 20 22 Z" />
+          </svg>
+          <span style="font-family: var(--font-display); font-size: var(--tiny-size); letter-spacing: 0.18em; color: rgba(0, 0, 0, 0.45);">PROFILE PHOTO</span>
+        </div>
+        <!-- Info -->
+        <div>
+          <span class="chip coral" style="margin-bottom: 0.4rem;">팀장</span>
+          <h4 style="font-family: var(--font-ko); font-weight: 800; font-size: clamp(1.25rem, 1.7vw, 1.55rem); color: var(--text-primary); margin-top: 0.5rem; line-height: 1.2;">유재혁</h4>
+          <ul style="list-style: none; padding: 0; margin: 0.7rem 0 0; display: flex; flex-direction: column; gap: 0.45rem; font-family: var(--font-ko); font-size: clamp(0.88rem, 1.05vw, 1rem); color: var(--text-secondary); line-height: 1.5;">
+            <li style="padding-left: 1rem; position: relative;"><span style="position: absolute; left: 0; top: 0.55em; width: 5px; height: 5px; border-radius: 50%; background: var(--coral);"></span>경북IT협업동아리 <strong>PARD 회장</strong></li>
+            <li style="padding-left: 1rem; position: relative;"><span style="position: absolute; left: 0; top: 0.55em; width: 5px; height: 5px; border-radius: 50%; background: var(--coral);"></span>2025 관광데이터 활용 공모전 <strong>대상 수상</strong></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 김도경 -->
+      <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: clamp(1rem, 1.4vw, 1.4rem); display: flex; flex-direction: column; gap: clamp(0.7rem, 1.1vw, 1.1rem);">
+        <div style="aspect-ratio: 1; border-radius: 12px; background: linear-gradient(135deg, var(--coral) 0%, var(--coral-deep) 100%); display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; overflow: hidden; gap: 0.4rem;">
+          <svg viewBox="0 0 24 24" style="width: clamp(40px, 5vw, 56px); height: auto; opacity: 0.85;" fill="rgba(255,255,255,0.92)" aria-hidden="true">
+            <circle cx="12" cy="8" r="4" />
+            <path d="M4 22 C4 15 7.5 13.5 12 13.5 C16.5 13.5 20 15 20 22 Z" />
+          </svg>
+          <span style="font-family: var(--font-display); font-size: var(--tiny-size); letter-spacing: 0.18em; color: rgba(0, 0, 0, 0.45);">PROFILE PHOTO</span>
+        </div>
+        <div>
+          <span class="chip cream" style="margin-bottom: 0.4rem;">팀원</span>
+          <h4 style="font-family: var(--font-ko); font-weight: 800; font-size: clamp(1.25rem, 1.7vw, 1.55rem); color: var(--text-primary); margin-top: 0.5rem; line-height: 1.2;">김도경</h4>
+          <ul style="list-style: none; padding: 0; margin: 0.7rem 0 0; display: flex; flex-direction: column; gap: 0.45rem; font-family: var(--font-ko); font-size: clamp(0.88rem, 1.05vw, 1rem); color: var(--text-secondary); line-height: 1.5;">
+            <li style="padding-left: 1rem; position: relative;"><span style="position: absolute; left: 0; top: 0.55em; width: 5px; height: 5px; border-radius: 50%; background: var(--coral);"></span><strong>스타트업 대표</strong></li>
+            <li style="padding-left: 1rem; position: relative;"><span style="position: absolute; left: 0; top: 0.55em; width: 5px; height: 5px; border-radius: 50%; background: var(--coral);"></span>해커톤 <strong>대상 수상</strong></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 김유영 -->
+      <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: clamp(1rem, 1.4vw, 1.4rem); display: flex; flex-direction: column; gap: clamp(0.7rem, 1.1vw, 1.1rem);">
+        <div style="aspect-ratio: 1; border-radius: 12px; background: linear-gradient(135deg, var(--coral) 0%, var(--coral-deep) 100%); display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; overflow: hidden; gap: 0.4rem;">
+          <svg viewBox="0 0 24 24" style="width: clamp(40px, 5vw, 56px); height: auto; opacity: 0.85;" fill="rgba(255,255,255,0.92)" aria-hidden="true">
+            <circle cx="12" cy="8" r="4" />
+            <path d="M4 22 C4 15 7.5 13.5 12 13.5 C16.5 13.5 20 15 20 22 Z" />
+          </svg>
+          <span style="font-family: var(--font-display); font-size: var(--tiny-size); letter-spacing: 0.18em; color: rgba(0, 0, 0, 0.45);">PROFILE PHOTO</span>
+        </div>
+        <div>
+          <span class="chip cream" style="margin-bottom: 0.4rem;">팀원</span>
+          <h4 style="font-family: var(--font-ko); font-weight: 800; font-size: clamp(1.25rem, 1.7vw, 1.55rem); color: var(--text-primary); margin-top: 0.5rem; line-height: 1.2;">김유영</h4>
+          <ul style="list-style: none; padding: 0; margin: 0.7rem 0 0; display: flex; flex-direction: column; gap: 0.45rem; font-family: var(--font-ko); font-size: clamp(0.88rem, 1.05vw, 1rem); color: var(--text-secondary); line-height: 1.5;">
+            <li style="padding-left: 1rem; position: relative;"><span style="position: absolute; left: 0; top: 0.55em; width: 5px; height: 5px; border-radius: 50%; background: var(--coral);"></span>게임 동아리 <strong>회장</strong></li>
+            <li style="padding-left: 1rem; position: relative;"><span style="position: absolute; left: 0; top: 0.55em; width: 5px; height: 5px; border-radius: 50%; background: var(--coral);"></span><strong>SirLab 대표</strong></li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- =============================================
+     24. CLOSING
+     ============================================= -->
+<section class="slide closing">
+  <div class="brand-mark"><span class="dot"></span>SIRLAB / HANDONG</div>
+  <div class="page-no"><b>END</b> / 14</div>
+
+  <div class="slide-content">
+    <span class="eyebrow reveal" style="margin: 0 auto;">THANK YOU</span>
+    <h1 class="reveal">로봇팔의 <span class="accent">ChatGPT.</span></h1>
+    <p class="reveal">로봇을 다루는 언어와 사람의 언어 사이의 간극을,<br/>AI로 메우는 가장 빠른 길.</p>
+    <div class="row reveal" style="justify-content: center; margin-top: 1rem;">
+      <span class="chip coral">Q &amp; A</span>
+      <span class="chip coral-outline">감사합니다</span>
+    </div>
+    <div class="small reveal" style="margin-top: clamp(1.5rem, 3vw, 3rem); letter-spacing: 0.16em; text-transform: uppercase;">SIRLAB · 한동대학교</div>
+  </div>
+</section>
+
+<script>
+  /* ===========================================
+     SLIDE PRESENTATION CONTROLLER
+     - IntersectionObserver: 슬라이드 진입 시 .visible 부착하여
+       CSS 애니메이션 트리거.
+     - 키보드: 화살표/스페이스/PgUp·PgDn
+     - 휠/터치: 한 번에 한 슬라이드씩 이동
+     - Nav dots & 진행 바
+     =========================================== */
+  class SlidePresentation {
+    constructor() {
+      this.slides = Array.from(document.querySelectorAll('.slide'));
+      this.navDotsContainer = document.querySelector('.nav-dots');
+      this.progressBar = document.querySelector('.progress-bar');
+      this.kbHint = document.getElementById('kbHint');
+      this.currentSlide = 0;
+      this.isScrolling = false;
+
+      this.setupIntersectionObserver();
+      this.setupNavDots();
+      this.setupKeyboardNav();
+      this.setupWheelNav();
+      this.setupTouchNav();
+      this.setupProgress();
+      this.setupHintDismiss();
+    }
+
+    /* 슬라이드가 50% 이상 보이면 active 처리 */
+    setupIntersectionObserver() {
+      const obs = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.intersectionRatio >= 0.5) {
+              entry.target.classList.add('visible');
+              this.currentSlide = this.slides.indexOf(entry.target);
+              this.updateNavDots();
+              this.updateProgress();
+            }
+          });
+        },
+        { threshold: [0.5] }
+      );
+      this.slides.forEach((s) => obs.observe(s));
+    }
+
+    /* IMPORTANT: 항상 비우고 다시 그리기.
+       (저장된 outerHTML을 다시 열 때 dot 중복 생성 방지) */
+    setupNavDots() {
+      this.navDotsContainer.innerHTML = '';
+      this.slides.forEach((_, i) => {
+        const dot = document.createElement('button');
+        dot.className = 'nav-dot' + (i === 0 ? ' active' : '');
+        dot.setAttribute('aria-label', `슬라이드 ${i + 1}`);
+        dot.addEventListener('click', () => this.goTo(i));
+        this.navDotsContainer.appendChild(dot);
+      });
+    }
+
+    updateNavDots() {
+      const dots = this.navDotsContainer.querySelectorAll('.nav-dot');
+      dots.forEach((d, i) => d.classList.toggle('active', i === this.currentSlide));
+    }
+
+    updateProgress() {
+      const ratio = this.slides.length > 1
+        ? this.currentSlide / (this.slides.length - 1)
+        : 0;
+      this.progressBar.style.width = `${ratio * 100}%`;
+    }
+
+    goTo(idx) {
+      idx = Math.max(0, Math.min(this.slides.length - 1, idx));
+      this.slides[idx].scrollIntoView({ behavior: 'smooth' });
+    }
+
+    next() { this.goTo(this.currentSlide + 1); }
+    prev() { this.goTo(this.currentSlide - 1); }
+
+    setupKeyboardNav() {
+      document.addEventListener('keydown', (e) => {
+        switch (e.key) {
+          case 'ArrowRight':
+          case 'ArrowDown':
+          case 'PageDown':
+          case ' ':
+            e.preventDefault();
+            this.next();
+            break;
+          case 'ArrowLeft':
+          case 'ArrowUp':
+          case 'PageUp':
+            e.preventDefault();
+            this.prev();
+            break;
+          case 'Home':
+            e.preventDefault();
+            this.goTo(0);
+            break;
+          case 'End':
+            e.preventDefault();
+            this.goTo(this.slides.length - 1);
+            break;
+          case 'f':
+          case 'F':
+            e.preventDefault();
+            this.toggleFullscreen();
+            break;
+        }
+      });
+    }
+
+    /* F 키 풀스크린 토글
+       — 진입 후 현재 슬라이드 위치를 유지하기 위해 약간 지연 후 재정렬 */
+    toggleFullscreen() {
+      const root = document.documentElement;
+      if (!document.fullscreenElement) {
+        const req = root.requestFullscreen
+          || root.webkitRequestFullscreen
+          || root.msRequestFullscreen;
+        if (req) {
+          req.call(root).then(() => {
+            setTimeout(() => this.slides[this.currentSlide]?.scrollIntoView(), 60);
+          }).catch(() => {});
+        }
+      } else {
+        const exit = document.exitFullscreen
+          || document.webkitExitFullscreen
+          || document.msExitFullscreen;
+        if (exit) {
+          exit.call(document).then(() => {
+            setTimeout(() => this.slides[this.currentSlide]?.scrollIntoView(), 60);
+          }).catch(() => {});
+        }
+      }
+    }
+
+    /* 마우스 휠 — 한 번에 한 슬라이드 (디바운스) */
+    setupWheelNav() {
+      let lock = false;
+      window.addEventListener('wheel', (e) => {
+        if (lock) return;
+        if (Math.abs(e.deltaY) < 30) return;
+        lock = true;
+        if (e.deltaY > 0) this.next();
+        else this.prev();
+        setTimeout(() => { lock = false; }, 700);
+      }, { passive: true });
+    }
+
+    /* 터치 스와이프 */
+    setupTouchNav() {
+      let startY = 0;
+      window.addEventListener('touchstart', (e) => {
+        startY = e.touches[0].clientY;
+      }, { passive: true });
+      window.addEventListener('touchend', (e) => {
+        const endY = e.changedTouches[0].clientY;
+        const dy = startY - endY;
+        if (Math.abs(dy) < 50) return;
+        if (dy > 0) this.next();
+        else this.prev();
+      }, { passive: true });
+    }
+
+    /* 처음 스크롤 시 키보드 힌트 자동 숨김 */
+    setupHintDismiss() {
+      let dismissed = false;
+      const dismiss = () => {
+        if (dismissed) return;
+        dismissed = true;
+        this.kbHint?.classList.add('hidden');
+      };
+      window.addEventListener('keydown', dismiss, { once: true });
+      window.addEventListener('wheel', dismiss, { once: true, passive: true });
+      window.addEventListener('touchstart', dismiss, { once: true, passive: true });
+      setTimeout(dismiss, 6000);
+    }
+
+    setupProgress() { this.updateProgress(); }
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    new SlidePresentation();
+    /* 첫 슬라이드는 즉시 visible 처리 (초기 진입 애니메이션) */
+    document.querySelector('.slide')?.classList.add('visible');
+  });
+</script>
+
+</body>
+</html>
