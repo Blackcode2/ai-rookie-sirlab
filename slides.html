@@ -1074,7 +1074,504 @@
     .slide { page-break-after: always; box-shadow: none; }
     .progress-bar, .nav-dots, .keyboard-hint { display: none; }
   }
+
+  /* =========================================================
+     SLIDE 7 — FINAL SERVICE FORM (dashboard + robot animation)
+     ========================================================= */
+  .demo-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(0.8rem, 1.4vw, 1.4rem);
+    flex: 1;
+    min-height: 0;
+    margin-top: clamp(0.5rem, 1.2vw, 1rem);
+  }
+  .demo-card {
+    background: var(--bg-card);
+    border: 1.5px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+    min-height: 0;
+  }
+
+  /* Browser chrome */
+  .cockpit-chrome {
+    background: rgba(255,255,255,0.04);
+    padding: 0.55rem 0.95rem;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 0.65rem;
+  }
+  .cockpit-dots { display: flex; gap: 0.32rem; }
+  .cockpit-dots span { width: 11px; height: 11px; border-radius: 50%; }
+  .cockpit-dots span:nth-child(1) { background: #FF5F57; }
+  .cockpit-dots span:nth-child(2) { background: #FEBC2E; }
+  .cockpit-dots span:nth-child(3) { background: #28C840; }
+  .cockpit-url {
+    flex: 1;
+    background: rgba(0,0,0,0.32);
+    padding: 0.25rem 0.7rem;
+    border-radius: 6px;
+    font-family: ui-monospace, 'JetBrains Mono', Menlo, monospace;
+    font-size: clamp(0.7rem, 0.85vw, 0.82rem);
+    color: var(--text-secondary);
+    letter-spacing: 0.04em;
+  }
+
+  /* Cockpit body */
+  .cockpit-body {
+    padding: clamp(0.85rem, 1.3vw, 1.35rem);
+    display: flex; flex-direction: column;
+    gap: clamp(0.7rem, 1.05vw, 1.05rem);
+    flex: 1; min-height: 0;
+  }
+  .cockpit-head {
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .cockpit-name {
+    font-family: var(--font-display);
+    font-size: clamp(0.9rem, 1.05vw, 1.05rem);
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    color: var(--text-primary);
+  }
+  .live-badge {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    padding: 0.22rem 0.6rem;
+    border-radius: 100px;
+    background: rgba(76,175,80,0.13);
+    border: 1px solid rgba(76,175,80,0.4);
+    font-family: var(--font-display);
+    font-size: clamp(0.6rem, 0.72vw, 0.74rem);
+    letter-spacing: 0.16em;
+    color: #66BB6A;
+  }
+  .live-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: #4CAF50;
+    animation: live-pulse 1.4s ease-in-out infinite;
+  }
+  @keyframes live-pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.55; transform: scale(1.25); }
+  }
+  .cockpit-label {
+    font-family: var(--font-display);
+    font-size: var(--tiny-size);
+    letter-spacing: 0.18em;
+    color: var(--text-secondary);
+    margin-bottom: 0.35rem;
+  }
+  .cockpit-input {
+    background: rgba(0,0,0,0.4);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0.85rem 1rem;
+    font-family: var(--font-ko);
+    font-size: clamp(0.92rem, 1.1vw, 1.05rem);
+    color: var(--text-primary);
+    line-height: 1.4;
+    min-height: 2.6em;
+    display: flex; align-items: center; gap: 2px;
+  }
+  .cmd-text {
+    white-space: nowrap;
+    overflow: hidden;
+    clip-path: inset(0 100% 0 0);
+    animation: cmd-type 10s ease-out infinite;
+  }
+  @keyframes cmd-type {
+    0%   { clip-path: inset(0 100% 0 0); }
+    20%  { clip-path: inset(0 0 0 0); }
+    23%  { clip-path: inset(0 0 0 0); }
+    24%  { clip-path: inset(0 100% 0 0); }
+    100% { clip-path: inset(0 100% 0 0); }
+  }
+  .cmd-cursor {
+    display: inline-block;
+    width: 2px; height: 1.05em;
+    background: var(--coral);
+    margin-left: 2px;
+    animation: cmd-blink 0.7s step-end infinite;
+    vertical-align: text-bottom;
+    flex-shrink: 0;
+  }
+  @keyframes cmd-blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+  }
+
+  /* Progress + status */
+  .cockpit-progress {
+    height: 8px;
+    background: rgba(255,255,255,0.07);
+    border-radius: 100px;
+    overflow: hidden;
+    position: relative;
+  }
+  .cockpit-progress::before {
+    content: "";
+    position: absolute; top: 0; left: 0; bottom: 0;
+    background: linear-gradient(90deg, var(--coral), #FFAB91);
+    width: 0;
+    border-radius: 100px;
+    animation: cockpit-fill 8s linear infinite;
+  }
+  @keyframes cockpit-fill {
+    0%, 30% { width: 0; }
+    72%     { width: 100%; }
+    90%     { width: 100%; }
+    91%     { width: 0; }
+    100%    { width: 0; }
+  }
+  .cockpit-status {
+    font-family: var(--font-ko);
+    font-size: clamp(0.78rem, 0.92vw, 0.9rem);
+    color: var(--text-secondary);
+    margin-top: 0.4rem;
+    display: flex; justify-content: space-between;
+  }
+
+  /* Task log */
+  .cockpit-log {
+    display: flex; flex-direction: column; gap: 0.42rem;
+    font-family: var(--font-ko);
+    font-size: clamp(0.82rem, 0.95vw, 0.92rem);
+    color: var(--text-secondary);
+  }
+  .log-item {
+    display: flex; align-items: center; gap: 0.55rem;
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  .log-item .marker {
+    font-family: var(--font-display);
+    width: 16px; text-align: center; font-size: 0.95em;
+  }
+  .log-item.green .marker { color: #66BB6A; }
+  .log-item.coral .marker { color: var(--coral); }
+  .log-item:nth-child(1) { animation: log-1 8s ease-out infinite; }
+  .log-item:nth-child(2) { animation: log-2 8s ease-out infinite; }
+  .log-item:nth-child(3) { animation: log-3 8s ease-out infinite; }
+  @keyframes log-1 {
+    0%, 38% { opacity: 0; transform: translateY(4px); }
+    43%, 88% { opacity: 1; transform: translateY(0); }
+    92%, 100% { opacity: 0; transform: translateY(4px); }
+  }
+  @keyframes log-2 {
+    0%, 52% { opacity: 0; transform: translateY(4px); }
+    57%, 88% { opacity: 1; transform: translateY(0); }
+    92%, 100% { opacity: 0; transform: translateY(4px); }
+  }
+  @keyframes log-3 {
+    0%, 65% { opacity: 0; transform: translateY(4px); }
+    70%, 88% { opacity: 1; transform: translateY(0); }
+    92%, 100% { opacity: 0; transform: translateY(4px); }
+  }
+
+  /* Robot arm stage */
+  .arm-stage {
+    flex: 1;
+    position: relative;
+    background:
+      radial-gradient(ellipse at 50% 100%, rgba(255,87,34,0.07) 0%, transparent 60%),
+      linear-gradient(180deg, rgba(255,255,255,0.025) 0%, rgba(0,0,0,0.3) 100%);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+  .arm-svg { width: 100%; flex: 1; display: block; min-height: 0; }
+  .arm-1-rot { transform-box: fill-box; transform-origin: 50% 100%; animation: arm1-cycle 8s ease-in-out infinite; }
+  .arm-2-rot { transform-box: fill-box; transform-origin: 50% 100%; animation: arm2-cycle 8s ease-in-out infinite; }
+  @keyframes arm1-cycle {
+    0%, 12%  { transform: rotate(0deg); }
+    24%      { transform: rotate(-58deg); }
+    32%      { transform: rotate(-58deg); }
+    42%      { transform: rotate(-30deg); }
+    54%      { transform: rotate(0deg); }
+    64%      { transform: rotate(50deg); }
+    72%      { transform: rotate(54deg); }
+    82%      { transform: rotate(20deg); }
+    92%, 100% { transform: rotate(0deg); }
+  }
+  @keyframes arm2-cycle {
+    0%, 12%  { transform: rotate(0deg); }
+    24%      { transform: rotate(38deg); }
+    32%      { transform: rotate(38deg); }
+    42%      { transform: rotate(-25deg); }
+    54%      { transform: rotate(-50deg); }
+    64%      { transform: rotate(-15deg); }
+    72%      { transform: rotate(25deg); }
+    82%      { transform: rotate(-15deg); }
+    92%, 100% { transform: rotate(0deg); }
+  }
+  .gripper-l { transform-origin: 0 0; animation: gripper-l 8s ease-in-out infinite; }
+  .gripper-r { transform-origin: 0 0; animation: gripper-r 8s ease-in-out infinite; }
+  @keyframes gripper-l {
+    0%, 26% { transform: translateX(0); }
+    30%, 70% { transform: translateX(4px); }
+    74%, 100% { transform: translateX(0); }
+  }
+  @keyframes gripper-r {
+    0%, 26% { transform: translateX(0); }
+    30%, 70% { transform: translateX(-4px); }
+    74%, 100% { transform: translateX(0); }
+  }
+  .cube-anim { animation: cube-cycle 8s ease-in-out infinite; }
+  @keyframes cube-cycle {
+    0%, 26%  { transform: translate(0, 0); opacity: 1; }
+    34%      { transform: translate(8px, -55px); opacity: 1; }
+    44%      { transform: translate(80px, -110px); opacity: 1; }
+    54%      { transform: translate(165px, -135px); opacity: 1; }
+    64%      { transform: translate(265px, -85px); opacity: 1; }
+    72%      { transform: translate(310px, -10px); opacity: 1; }
+    88%      { transform: translate(310px, -10px); opacity: 1; }
+    91%      { transform: translate(310px, -10px); opacity: 0; }
+    92%      { transform: translate(0, 0); opacity: 0; }
+    100%     { transform: translate(0, 0); opacity: 1; }
+  }
+  /* Spotlight follows roughly under the gripper */
+  .arm-shadow { animation: shadow-cycle 8s ease-in-out infinite; transform-origin: center; }
+  @keyframes shadow-cycle {
+    0%, 12%, 92%, 100% { transform: translate(0, 0) scale(1); opacity: 0.45; }
+    30% { transform: translate(-150px, 0) scale(0.7); opacity: 0.35; }
+    50% { transform: translate(0, 0) scale(0.6); opacity: 0.3; }
+    70% { transform: translate(150px, 0) scale(0.7); opacity: 0.35; }
+  }
+
+  /* 3D canvas for slide 7 */
+  .arm-canvas3d {
+    flex: 1;
+    width: 100%;
+    min-height: 0;
+    display: block;
+    outline: none;
+    background: transparent;
+  }
+
+  /* =========================================================
+     SLIDE 7 — TalkToBot chat-style dashboard
+     ========================================================= */
+  .talkbot-app {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    background: linear-gradient(180deg, rgba(255,255,255,0.015) 0%, rgba(0,0,0,0.25) 100%);
+  }
+
+  .chat-header {
+    padding: clamp(0.7rem, 1vw, 1rem) clamp(0.85rem, 1.2vw, 1.2rem);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.6rem;
+    background: rgba(255,255,255,0.025);
+    flex-shrink: 0;
+  }
+  .chat-name-row { display: flex; align-items: center; gap: 0.7rem; }
+  .chat-avatar {
+    width: clamp(34px, 3.4vw, 40px);
+    height: clamp(34px, 3.4vw, 40px);
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--coral) 0%, #FF8A65 100%);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: clamp(0.95rem, 1.2vw, 1.15rem);
+    color: #fff;
+    box-shadow: 0 6px 16px rgba(255,87,34,0.32), inset 0 1px 0 rgba(255,255,255,0.25);
+    letter-spacing: 0.02em;
+  }
+  .chat-name {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(0.95rem, 1.1vw, 1.1rem);
+    letter-spacing: 0.04em;
+    color: var(--text-primary);
+    line-height: 1.1;
+  }
+  .chat-sub {
+    font-family: var(--font-ko);
+    font-size: clamp(0.7rem, 0.85vw, 0.82rem);
+    color: var(--text-secondary);
+    margin-top: 0.18rem;
+    display: flex; align-items: center; gap: 0.3rem;
+  }
+  .chat-sub .online-dot {
+    color: #4CAF50;
+    font-size: 0.85em;
+    animation: live-pulse 1.4s ease-in-out infinite;
+  }
+
+  .chat-messages {
+    flex: 1;
+    min-height: 0;
+    padding: clamp(0.85rem, 1.2vw, 1.2rem);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: clamp(0.55rem, 0.9vw, 0.85rem);
+    overflow: hidden;
+  }
+
+  .msg {
+    display: flex;
+    gap: 0.5rem;
+    align-items: flex-end;
+    max-width: 92%;
+  }
+  .msg-avatar {
+    width: 28px; height: 28px;
+    border-radius: 9px;
+    background: linear-gradient(135deg, var(--coral) 0%, #FF8A65 100%);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 0.8rem;
+    color: #fff;
+    flex-shrink: 0;
+    box-shadow: 0 3px 10px rgba(255,87,34,0.3);
+  }
+  .msg-bubble {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid var(--border);
+    padding: 0.6rem 0.9rem;
+    border-radius: 14px;
+    border-bottom-left-radius: 4px;
+    font-family: var(--font-ko);
+    font-size: clamp(0.85rem, 0.98vw, 0.98rem);
+    line-height: 1.45;
+    color: var(--text-primary);
+  }
+  .msg.user {
+    align-self: flex-end;
+    flex-direction: row-reverse;
+  }
+  .msg.user .msg-bubble {
+    background: linear-gradient(135deg, var(--coral) 0%, #E64A19 100%);
+    color: #fff;
+    border-color: transparent;
+    border-radius: 14px;
+    border-bottom-right-radius: 4px;
+    box-shadow: 0 6px 18px rgba(255,87,34,0.32);
+  }
+  .msg-line {
+    display: block;
+    font-size: 0.96em;
+  }
+  .msg-line + .msg-line { margin-top: 0.28rem; }
+  .marker-icon {
+    display: inline-block;
+    margin-right: 0.32rem;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 0.92em;
+  }
+  .marker-green { color: #66BB6A; }
+  .marker-coral { color: var(--coral); }
+
+  .bubble-done {
+    background: rgba(76,175,80,0.13);
+    border-color: rgba(76,175,80,0.4);
+  }
+
+  .chat-progress {
+    height: 6px;
+    background: rgba(255,255,255,0.12);
+    border-radius: 100px;
+    margin-top: 0.5rem;
+    overflow: hidden;
+  }
+  .chat-progress-fill {
+    height: 100%;
+    width: 0;
+    background: linear-gradient(90deg, var(--coral), #FFAB91);
+    border-radius: 100px;
+    animation: chat-progress 10s linear infinite;
+  }
+  @keyframes chat-progress {
+    0%, 42% { width: 0; }
+    58%     { width: 100%; }
+    95%     { width: 100%; }
+    100%    { width: 0; }
+  }
+
+  /* Per-message reveal animations (10s cycle: action 0-72%, "done" hold 72-95%, fade 95-100%) */
+  .msg-anim { opacity: 0; transform: translateY(10px); }
+  .msg-1 { animation: msg-1 10s ease-out infinite; }
+  .msg-2 { animation: msg-2 10s ease-out infinite; }
+  .msg-3 { animation: msg-3 10s ease-out infinite; }
+  .msg-4 { animation: msg-4 10s ease-out infinite; }
+  @keyframes msg-1 {
+    0%, 22%   { opacity: 0; transform: translateY(10px); }
+    26%, 95%  { opacity: 1; transform: translateY(0); }
+    98%, 100% { opacity: 0; transform: translateY(10px); }
+  }
+  @keyframes msg-2 {
+    0%, 30%   { opacity: 0; transform: translateY(10px); }
+    34%, 95%  { opacity: 1; transform: translateY(0); }
+    98%, 100% { opacity: 0; transform: translateY(10px); }
+  }
+  @keyframes msg-3 {
+    0%, 40%   { opacity: 0; transform: translateY(10px); }
+    44%, 95%  { opacity: 1; transform: translateY(0); }
+    98%, 100% { opacity: 0; transform: translateY(10px); }
+  }
+  @keyframes msg-4 {
+    0%, 69%   { opacity: 0; transform: translateY(10px); }
+    73%, 95%  { opacity: 1; transform: translateY(0); }
+    98%, 100% { opacity: 0; transform: translateY(10px); }
+  }
+
+  /* Input bar (anchored at bottom) */
+  .chat-input-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: clamp(0.65rem, 1vw, 0.95rem) clamp(0.75rem, 1.1vw, 1rem);
+    border-top: 1px solid var(--border);
+    background: rgba(0,0,0,0.32);
+    flex-shrink: 0;
+  }
+  .chat-input {
+    flex: 1;
+    background: rgba(0,0,0,0.4);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 0.55rem 1rem;
+    font-family: var(--font-ko);
+    font-size: clamp(0.85rem, 1.0vw, 0.98rem);
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    min-height: 2.4em;
+    line-height: 1.3;
+    overflow: hidden;
+  }
+  .chat-send {
+    width: clamp(34px, 3.2vw, 40px);
+    height: clamp(34px, 3.2vw, 40px);
+    border-radius: 50%;
+    border: none;
+    background: linear-gradient(135deg, var(--coral) 0%, #E64A19 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    cursor: pointer;
+    flex-shrink: 0;
+    box-shadow: 0 6px 16px rgba(255,87,34,0.4);
+    padding: 0;
+  }
+  .chat-send svg { transform: translateX(-1px); }
 </style>
+<script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
 </head>
 <body>
 
@@ -1084,159 +1581,11 @@
 <div class="keyboard-hint" id="kbHint">← → · F (FULLSCREEN) · SCROLL · TOUCH</div>
 
 <!-- =============================================
-     1. COVER
-     ============================================= -->
-<!--
-<section class="slide cover">
-  <div class="brand-mark"><span class="dot"></span>SIRLAB / HANDONG</div>
-  <div class="page-no"><b>01</b> / 14</div>
-
-  <div class="cover-grid">
-    <div class="cover-card reveal">
-      <h1>로봇팔의<br/>ChatGPT.</h1>
-      <p class="tag">자연어 명령 한 마디로 협동로봇을 즉시 운용하는 제조사 독립적 SaaS 플랫폼</p>
-    </div>
-
-    <div class="cover-meta-card reveal">
-      <div>
-        <div class="lbl">TEAM</div>
-        <div class="v">SirLab</div>
-        <div class="small" style="margin-top:0.2rem;">한동대학교 AI컴퓨터전자공학부</div>
-      </div>
-      <div class="divider"></div>
-      <div>
-        <div class="lbl">MEMBERS</div>
-        <div class="v">김도경 · 김유영 · 유재혁</div>
-      </div>
-    </div>
-  </div>
-</section>
--->
-
-<!-- =============================================
-     2. SECTION 1
-     ============================================= -->
-<!--
-<section class="slide section">
-  
-  <div class="page-no"><b>02</b> / 14</div>
-
-  <div class="slide-content" style="align-items:flex-start;">
-    <div class="num-large reveal">01</div>
-    <h2 class="reveal">도전 배경 및 목적</h2>
-    <p class="reveal">연구실에서 마주친 불편함이, 어떻게 산업 현장의 문제로 이어졌는가</p>
-  </div>
-</section>
--->
-
-<!-- =============================================
-     4. 1.1 배경
-     ============================================= -->
-<!--
-<section class="slide">
-  
-  <div class="page-no"><b>03</b> / 14</div>
-
-  <div class="slide-content">
-    <span class="eyebrow reveal">아이디어 제안 배경</span>
-    <h2 class="title reveal">"우리가 어렵다면, 현장은 더 어렵지 않을까?"</h2>
-
-    <div class="grid-2 stagger" style="margin-top: clamp(0.6rem, 1.5vw, 1.2rem);">
-      <div class="stack" style="gap: clamp(0.5rem, 1vw, 1rem);">
-        <div class="card">
-          <h4>연구실에서의 경험</h4>
-          <p>VR 기기 · ROS2 · Isaac Sim을 연결해 로봇팔을 제어하기까지, 컴공 전공자에게도 환경 설정이 길고 복잡했습니다.</p>
-        </div>
-        <div class="card outline">
-          <h4>현장으로 옮긴 질문</h4>
-          <p>"실제 기업·공장에서 로봇을 활용할 때는 어떨까?" 중소 제조현장은 작업이 바뀔 때마다 SI업체를 섭외해야 하고, 그 사이 생산이 멈춥니다.</p>
-        </div>
-        <div class="card coral">
-          <h4>문제의 핵심</h4>
-          <p>로봇을 다루는 언어가 사람의 언어와 너무 동떨어져 있다는 것. <strong>LLM이 그 간극을 좁힐 수 있다.</strong></p>
-        </div>
-      </div>
-
-      <figure style="margin: 0; border-radius: 14px; overflow: hidden; border: 1px solid var(--border); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35); display: flex; flex-direction: column; min-height: clamp(280px, 50vh, 460px);">
-        <img src="images/china-industrial-robot.jpg"
-             alt="중국 자동차 공장의 산업용 로봇팔 — 단일 반복 작업에 묶인 협동로봇의 현실"
-             style="width: 100%; height: 100%; object-fit: cover; display: block; flex: 1; min-height: 0;" />
-        <figcaption style="background: var(--bg-elev-1); padding: clamp(0.6rem, 1vw, 1rem) clamp(0.9rem, 1.4vw, 1.4rem); font-family: var(--font-ko); font-size: var(--small-size); color: var(--text-secondary); line-height: 1.5; border-top: 1px solid var(--border);">
-          <span style="color: var(--coral); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; font-size: var(--tiny-size);">FIELD</span>
-          &nbsp;&nbsp;단일 작업에 고정된 산업용 로봇팔 — 우리가 풀려는 문제의 풍경
-        </figcaption>
-      </figure>
-    </div>
-  </div>
-</section>
--->
-
-<!-- =============================================
-     5. 1.2 핵심 요약
-     ============================================= -->
-<section class="slide">
-  
-  <div class="page-no"><b>04</b> / 14</div>
-
-  <div class="slide-content">
-    <span class="eyebrow reveal">아이디어 핵심 요약</span>
-    <h2 class="title reveal">자연어 한 마디로 즉시 동작하는 로봇 SaaS</h2>
-    <p class="lead reveal">두 개의 레이어와 하나의 어댑터로 구성된 단순한 구조.</p>
-
-    <div class="grid-3 stagger" style="margin-top: clamp(0.4rem, 1vw, 0.8rem);">
-      <div class="card coral">
-        <div class="num-tag">1</div>
-        <h4>LLM 통역 레이어</h4>
-        <p>음성·텍스트 명령을 Gemini Robotics-ER API가 해석해 제어 코드를 즉시 생성·실행. <strong>별도 학습 없이</strong> 작동.</p>
-      </div>
-      <div class="card">
-        <div class="num-tag">2</div>
-        <h4>정밀 제어 레이어</h4>
-        <p>섬세한 물체 조작·정밀 위치가 필요한 경우, OpenVLA 모델을 사용자 환경에 맞게 <strong>파인튜닝</strong>해 배포.</p>
-      </div>
-      <div class="card outline">
-        <div class="num-tag">3</div>
-        <h4>로봇팔 어댑터 레이어</h4>
-        <p>Indy7 · UR · Franka의 서로 다른 API와 좌표계를 <strong>하나의 인터페이스</strong>로 통일.</p>
-      </div>
-    </div>
-
-    <!-- 2-image row: robollm (landscape, high-level flow) + flow (portrait, detailed architecture)
-         flex: 1 + min-height: 0 으로 슬라이드 남는 수직 공간을 모두 사용하고,
-         각 컨테이너는 stretch로 같은 높이를 갖되 이미지는 object-fit: contain으로
-         자기 비율을 유지한 채 컨테이너 안에 들어감 -->
-    <div class="reveal" style="
-      display: grid;
-      grid-template-columns: 1.55fr 1fr;
-      gap: clamp(0.7rem, 1.2vw, 1.2rem);
-      flex: 1;
-      min-height: 0;
-      align-items: stretch;
-      margin-top: clamp(0.4rem, 0.9vw, 0.9rem);
-    ">
-      <!-- LEFT: robollm.png (landscape, 자연어 → AI → 제어 코드 → 실행 흐름) -->
-      <div style="background: #ffffff; border-radius: 14px; padding: clamp(0.7rem, 1.1vw, 1.1rem) clamp(0.9rem, 1.4vw, 1.4rem); display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 28px rgba(0, 0, 0, 0.3); min-height: 0;">
-        <img src="images/robollm.png"
-             alt="3-레이어 시스템 아키텍처: 현장 작업자 자연어 명령 → AI(LLM) → 로봇 제어 코드 → 로봇 실행"
-             style="width: 100%; height: auto; max-height: 100%; object-fit: contain; display: block;" />
-      </div>
-
-      <!-- RIGHT: flow.png (portrait, 상세 3-레이어 아키텍처) -->
-      <div style="background: #ffffff; border-radius: 14px; padding: clamp(0.5rem, 0.9vw, 0.9rem); display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 28px rgba(0, 0, 0, 0.3); min-height: 0;">
-        <img src="images/flow.png"
-             alt="상세 시스템 아키텍처: LLM 통역 레이어 (Gemini Robotics-ER) + 정밀 제어 레이어 (OpenVLA) + 로봇팔 어댑터 레이어"
-             style="max-width: 100%; max-height: 100%; height: auto; object-fit: contain; display: block;" />
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- =============================================
      6. 1.3 문제
      ============================================= -->
 <section class="slide">
   
-  <div class="page-no"><b>05</b> / 14</div>
+  <div class="page-no"><b>01</b> / 10</div>
 
   <div class="slide-content">
     <span class="eyebrow reveal">해결하고자 하는 문제</span>
@@ -1265,52 +1614,185 @@
 </section>
 
 <!-- =============================================
-     7. SECTION 2
+     7B. 최종 서비스 형태 (대시보드 + 로봇암 데모)
      ============================================= -->
-<section class="slide section">
-  
-  <div class="page-no"><b>06</b> / 14</div>
+<section class="slide">
 
-  <div class="slide-content" style="align-items:flex-start;">
-    <div class="num-large reveal">02</div>
-    <h2 class="reveal">아이디어 상세 및 차별점</h2>
-    <p class="reveal">사용자가 실제로 경험하는 시나리오와, 우리만의 차별 포인트</p>
+  <div class="page-no"><b>02</b> / 10</div>
+
+  <div class="slide-content">
+    <span class="eyebrow reveal">최종 서비스 형태</span>
+    <h2 class="title reveal">자연어 한 마디로 <span style="color:var(--coral)">즉시 동작</span>하는 협동로봇</h2>
+
+    <div class="demo-grid stagger">
+
+      <!-- LEFT: TALKTOBOT CHAT DASHBOARD -->
+      <div class="demo-card">
+        <div class="cockpit-chrome">
+          <div class="cockpit-dots"><span></span><span></span><span></span></div>
+          <div class="cockpit-url">talktobot.app</div>
+        </div>
+        <div class="talkbot-app">
+          <!-- Chat header -->
+          <div class="chat-header">
+            <div class="chat-name-row">
+              <div class="chat-avatar">T</div>
+              <div>
+                <div class="chat-name">TalkToBot</div>
+                <div class="chat-sub"><span class="online-dot">●</span>온라인 · AI 로봇 어시스턴트</div>
+              </div>
+            </div>
+            <div class="live-badge"><span class="live-dot"></span>LIVE</div>
+          </div>
+
+          <!-- Chat messages (newest at bottom, anchored to bottom) -->
+          <div class="chat-messages">
+
+            <!-- Bot greeting (always visible) -->
+            <div class="msg bot">
+              <div class="msg-avatar">T</div>
+              <div class="msg-bubble">안녕하세요. 어떤 작업을 도와드릴까요?</div>
+            </div>
+
+            <!-- User command (sent at ~30%) -->
+            <div class="msg user msg-anim msg-1">
+              <div class="msg-bubble">빨간 큐브를 집어서 노란 박스에 넣어줘</div>
+            </div>
+
+            <!-- Bot: analysis (at ~40%) -->
+            <div class="msg bot msg-anim msg-2">
+              <div class="msg-avatar">T</div>
+              <div class="msg-bubble">
+                <div class="msg-line"><span class="marker-icon marker-green">✓</span>음성 인식 완료</div>
+                <div class="msg-line"><span class="marker-icon marker-green">✓</span>장면 분석 · 태스크 분해 (3 단계)</div>
+              </div>
+            </div>
+
+            <!-- Bot: progress (at ~52%) -->
+            <div class="msg bot msg-anim msg-3">
+              <div class="msg-avatar">T</div>
+              <div class="msg-bubble">
+                <div class="msg-line"><span class="marker-icon marker-coral">▸</span>로봇 동작 실행 중 — <strong>Pick &amp; Place</strong></div>
+                <div class="chat-progress"><div class="chat-progress-fill"></div></div>
+              </div>
+            </div>
+
+            <!-- Bot: done (at ~88%) -->
+            <div class="msg bot msg-anim msg-4">
+              <div class="msg-avatar">T</div>
+              <div class="msg-bubble bubble-done">
+                <span class="marker-icon marker-green">✓</span>완료! 큐브를 노란 박스에 넣었습니다.
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Input bar at bottom -->
+          <div class="chat-input-bar">
+            <div class="chat-input">
+              <span class="cmd-text">빨간 큐브를 집어서 노란 박스에 넣어줘</span><span class="cmd-cursor"></span>
+            </div>
+            <button class="chat-send" aria-label="send" tabindex="-1">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true">
+                <path d="M3 11.5L21 3l-8.5 18-2.3-7.5L3 11.5z"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: ROBOT ARM ANIMATION -->
+      <div class="demo-card arm-stage">
+        <div class="cockpit-chrome">
+          <div class="cockpit-dots"><span style="background:#4CAF50;"></span><span style="background:rgba(255,255,255,0.15);"></span><span style="background:rgba(255,255,255,0.15);"></span></div>
+          <div class="cockpit-url" style="color:#66BB6A; letter-spacing:0.16em;">● ROBOT&nbsp;CAM · LIVE</div>
+        </div>
+        <canvas id="armCanvas3d" class="arm-canvas3d" aria-label="자연어 명령에 따라 작동하는 협동로봇 3D 데모"></canvas>
+      </div>
+
+    </div>
   </div>
 </section>
 
 <!-- =============================================
-     15. 2.3 AI 활용 계획
+     5. 1.2 핵심 요약 (TalkToBot 다음 — AI 활용 통합)
      ============================================= -->
 <section class="slide">
-  
-  <div class="page-no"><b>07</b> / 14</div>
+
+  <div class="page-no"><b>03</b> / 10</div>
 
   <div class="slide-content">
-    <span class="eyebrow reveal">인공지능 활용 계획</span>
-    <h2 class="title reveal">단계별로 다른 AI 모델을 조합</h2>
+    <span class="eyebrow reveal">AI 및 서비스 플로우</span>
+    <h2 class="title reveal">자연어 한 마디로 움직이는 <span style="color:var(--coral)">로봇 SaaS</span></h2>
+    <p class="lead reveal">음성 입력부터 로봇 실행까지 — <strong>AI 3-레이어</strong> + 로봇팔 어댑터 통합 파이프라인</p>
 
-    <div class="grid-3 stagger" style="margin-top: clamp(0.6rem, 1.4vw, 1.2rem);">
-      <div class="card">
-        <span class="chip coral-outline">음성 입력</span>
-        <h4>Speech-to-Text</h4>
-        <p>Gemini Live API 또는 OpenAI Whisper로 현장 작업자의 음성 명령을 텍스트로 변환합니다.</p>
-      </div>
-      <div class="card coral">
-        <span class="chip" style="background:rgba(0,0,0,0.18); color:#1a1a1a; border-color:transparent;">상황 판단 · 단순 조작</span>
-        <h4>Gemini Robotics-ER 1.5</h4>
-        <p>장면을 이해하고 태스크를 분해해 제어 코드를 생성합니다. 대부분의 명령이 이 단계에서 해결.</p>
-      </div>
-      <div class="card outline">
-        <span class="chip cream">정밀 조작</span>
-        <h4>OpenVLA</h4>
-        <p>코드 생성만으론 어려운 파지·조립·삽입을 위해 사용자 환경에 맞춰 파인튜닝하여 배포.</p>
-      </div>
-    </div>
+    <div class="grid-2 stagger" style="margin-top: clamp(0.4rem, 1vw, 0.9rem); flex: 1; min-height: 0; align-items: stretch; gap: clamp(0.8rem, 1.4vw, 1.4rem);">
+      <!-- LEFT: 4-layer cards stacked (compact, logo on the left) -->
+      <div style="display: flex; flex-direction: column; gap: clamp(0.4rem, 0.7vw, 0.7rem); min-height: 0;">
+        <div class="card" style="display: flex; flex-direction: row; align-items: center; gap: clamp(0.7rem, 1vw, 1rem); padding: clamp(0.55rem, 0.85vw, 0.85rem) clamp(0.85rem, 1.15vw, 1.15rem);">
+          <div style="height: clamp(54px, 5.5vw, 74px); flex-shrink: 0; background: #ffffff; border-radius: 8px; padding: 6px 10px; display: flex; align-items: center; justify-content: flex-start; box-shadow: 0 3px 10px rgba(0,0,0,0.25);">
+            <img src="images/whisper.png" alt="OpenAI Whisper" style="height: 100%; width: auto; max-width: clamp(96px, 10.5vw, 150px); object-fit: contain; object-position: left center; display: block;" />
+          </div>
+          <div style="flex: 1; min-width: 0;">
+            <h4 style="margin: 0; font-size: clamp(1.05rem, 1.3vw, 1.3rem); display: flex; align-items: baseline; gap: 0.45rem;">
+              <span style="color: var(--coral); font-family: var(--font-display); font-weight: 700; font-size: 0.92em; letter-spacing: 0.04em;">01</span>
+              음성 인식 레이어
+            </h4>
+            <p style="margin: 0.2rem 0 0; font-size: clamp(0.88rem, 1.05vw, 1.02rem); line-height: 1.4;"><strong>Gemini Live API · OpenAI Whisper</strong>로 현장 작업자의 음성 명령을 실시간 텍스트로 변환.</p>
+          </div>
+        </div>
+        <div class="card" style="display: flex; flex-direction: row; align-items: center; gap: clamp(0.7rem, 1vw, 1rem); padding: clamp(0.55rem, 0.85vw, 0.85rem) clamp(0.85rem, 1.15vw, 1.15rem);">
+          <div style="height: clamp(54px, 5.5vw, 74px); flex-shrink: 0; background: #ffffff; border-radius: 8px; padding: 6px 10px; display: flex; align-items: center; justify-content: flex-start; box-shadow: 0 3px 10px rgba(0,0,0,0.25); overflow: hidden;">
+            <img src="images/google-gemini.jpg" alt="Google Gemini" style="height: 100%; width: auto; max-width: clamp(96px, 10.5vw, 150px); object-fit: contain; object-position: left center; display: block; border-radius: 4px;" />
+          </div>
+          <div style="flex: 1; min-width: 0;">
+            <h4 style="margin: 0; font-size: clamp(1.05rem, 1.3vw, 1.3rem); display: flex; align-items: baseline; gap: 0.45rem;">
+              <span style="color: var(--coral); font-family: var(--font-display); font-weight: 700; font-size: 0.92em; letter-spacing: 0.04em;">02</span>
+              LLM 통역 레이어
+            </h4>
+            <p style="margin: 0.2rem 0 0; font-size: clamp(0.88rem, 1.05vw, 1.02rem); line-height: 1.4;"><strong>Gemini Robotics-ER 1.5</strong>가 장면을 이해하고 태스크를 분해해 제어 코드를 즉시 생성·실행.</p>
+          </div>
+        </div>
+        <div class="card" style="display: flex; flex-direction: row; align-items: center; gap: clamp(0.7rem, 1vw, 1rem); padding: clamp(0.55rem, 0.85vw, 0.85rem) clamp(0.85rem, 1.15vw, 1.15rem);">
+          <div style="height: clamp(54px, 5.5vw, 74px); flex-shrink: 0; background: #ffffff; border-radius: 8px; padding: 6px 14px; display: flex; align-items: center; justify-content: center; box-shadow: 0 3px 10px rgba(0,0,0,0.25);">
+            <span style="font-family: var(--font-display); font-weight: 800; font-size: clamp(1.05rem, 1.3vw, 1.3rem); color: #1a1a1a; letter-spacing: 0.01em; white-space: nowrap;">OpenVLA</span>
+          </div>
+          <div style="flex: 1; min-width: 0;">
+            <h4 style="margin: 0; font-size: clamp(1.05rem, 1.3vw, 1.3rem); display: flex; align-items: baseline; gap: 0.45rem;">
+              <span style="color: var(--coral); font-family: var(--font-display); font-weight: 700; font-size: 0.92em; letter-spacing: 0.04em;">03</span>
+              정밀 제어 레이어
+            </h4>
+            <p style="margin: 0.2rem 0 0; font-size: clamp(0.88rem, 1.05vw, 1.02rem); line-height: 1.4;">섬세한 파지·조립·삽입을 위한 비전-언어-액션 모델을 사용자 환경에 맞춰 파인튜닝하여 배포.</p>
+          </div>
+        </div>
 
-    <div class="reveal" style="background: #ffffff; border-radius: 14px; padding: clamp(0.5rem, 0.9vw, 0.9rem) clamp(0.7rem, 1.2vw, 1.2rem); display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35); flex: 1; min-height: 0;">
-      <img src="images/ai-flow.png"
-           alt="AI 활용 계획 파이프라인: 음성 → STT(Gemini Live·Whisper) → 상황 판단 및 단순 조작(Gemini Robotics-ER) → 정밀 조작(OpenVLA) → 로봇 실행"
-           style="width: 100%; height: 100%; max-height: clamp(280px, 48vh, 540px); object-fit: contain; display: block;" />
+        <!-- Visual divider: AI ↑ / Adapter ↓ -->
+        <div style="display: flex; align-items: center; gap: 0.7rem; margin: 0.15rem 0 0.05rem; opacity: 0.7;">
+          <div style="flex: 1; height: 1px; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.18), rgba(255,255,255,0.18));"></div>
+          <span style="font-family: var(--font-display); font-size: clamp(0.72rem, 0.85vw, 0.85rem); letter-spacing: 0.18em; color: var(--text-secondary);">↑ AI · ROBOT INTEGRATION ↓</span>
+          <div style="flex: 1; height: 1px; background: linear-gradient(90deg, rgba(255,255,255,0.18), rgba(255,255,255,0.18), transparent);"></div>
+        </div>
+
+        <div class="card outline" style="display: flex; flex-direction: row; align-items: center; gap: clamp(0.7rem, 1vw, 1rem); padding: clamp(0.55rem, 0.85vw, 0.85rem) clamp(0.85rem, 1.15vw, 1.15rem);">
+          <div style="width: clamp(54px, 5.5vw, 74px); aspect-ratio: 1; flex-shrink: 0; background: rgba(255,213,79,0.12); border: 1px solid rgba(255,213,79,0.45); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-weight: 700; font-size: clamp(0.95rem, 1.18vw, 1.12rem); color: #FFD54F; letter-spacing: 0.08em;">
+            API
+          </div>
+          <div style="flex: 1; min-width: 0;">
+            <h4 style="margin: 0; font-size: clamp(1.05rem, 1.3vw, 1.3rem); display: flex; align-items: baseline; gap: 0.45rem;">
+              <span style="color: #FFD54F; font-family: var(--font-display); font-weight: 700; font-size: 0.92em; letter-spacing: 0.04em;">04</span>
+              로봇팔 어댑터 레이어
+            </h4>
+            <p style="margin: 0.2rem 0 0; font-size: clamp(0.88rem, 1.05vw, 1.02rem); line-height: 1.4;"><strong>Indy7 · UR · Franka</strong>의 서로 다른 API와 좌표계를 하나의 인터페이스로 통일.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: detailed architecture diagram -->
+      <div class="reveal" style="background: #ffffff; border-radius: 14px; padding: clamp(0.8rem, 1.4vw, 1.4rem); display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35); min-height: 0;">
+        <img src="images/flow.png"
+             alt="상세 시스템 아키텍처: 음성 인식 (Whisper) + LLM 통역 (Gemini Robotics-ER) + 정밀 제어 (OpenVLA) + 로봇팔 어댑터"
+             style="max-width: 100%; max-height: 100%; height: auto; object-fit: contain; display: block;" />
+      </div>
     </div>
   </div>
 </section>
@@ -1320,7 +1802,7 @@
      ============================================= -->
 <section class="slide">
   
-  <div class="page-no"><b>08</b> / 14</div>
+  <div class="page-no"><b>04</b> / 10</div>
 
   <div class="slide-content">
     <span class="eyebrow reveal">사용자 시나리오 · 페르소나</span>
@@ -1365,7 +1847,7 @@
      ============================================= -->
 <section class="slide">
   
-  <div class="page-no"><b>09</b> / 14</div>
+  <div class="page-no"><b>05</b> / 10</div>
 
   <div class="slide-content">
     <span class="eyebrow reveal">시나리오 · 첫 설치</span>
@@ -1604,7 +2086,7 @@
      ============================================= -->
 <section class="slide">
   
-  <div class="page-no"><b>10</b> / 14</div>
+  <div class="page-no"><b>06</b> / 10</div>
 
   <div class="slide-content">
     <span class="eyebrow reveal">시나리오 · 일상적 사용</span>
@@ -1641,7 +2123,7 @@
      ============================================= -->
 <section class="slide">
   
-  <div class="page-no"><b>11</b> / 14</div>
+  <div class="page-no"><b>07</b> / 10</div>
 
   <div class="slide-content">
     <span class="eyebrow reveal">시나리오 · 예외와 신규 작업</span>
@@ -1801,7 +2283,7 @@
      ============================================= -->
 <section class="slide">
   
-  <div class="page-no"><b>12</b> / 14</div>
+  <div class="page-no"><b>08</b> / 10</div>
 
   <div class="slide-content">
     <span class="eyebrow reveal">시나리오 · 웹 대시보드</span>
@@ -1994,7 +2476,7 @@
 <template data-commented="2.2 창의성과 차별점">
 <section class="slide">
   
-  <div class="page-no"><b>13</b> / 14</div>
+  <div class="page-no"><b>09</b> / 10</div>
 
   <div class="slide-content">
     <span class="eyebrow reveal">창의성과 차별점</span>
@@ -2042,7 +2524,7 @@
 <template data-commented="2.2 우리만의 3가지 차별점">
 <section class="slide">
   
-  <div class="page-no"><b>14</b> / 14</div>
+  <div class="page-no"><b>10</b> / 10</div>
 
   <div class="slide-content">
     <span class="eyebrow reveal">우리만의 3가지 차별점</span>
@@ -2075,7 +2557,7 @@
 <template data-commented="구현 계획 및 추진일정">
 <section class="slide section">
   
-  <div class="page-no"><b>15</b> / 14</div>
+  <div class="page-no"><b>11</b> / 10</div>
 
   <div class="slide-content" style="align-items:flex-start;">
     <div class="num-large reveal">03</div>
@@ -2091,7 +2573,7 @@
 <template data-commented="3.1 구현 방법 및 활용 기술">
 <section class="slide">
   
-  <div class="page-no"><b>16</b> / 14</div>
+  <div class="page-no"><b>12</b> / 10</div>
 
   <div class="slide-content">
     <span class="eyebrow reveal">구현 방법 및 활용 기술</span>
@@ -2141,7 +2623,7 @@
 <template data-commented="3.2 도전과제 및 해결방안 (1/2)">
 <section class="slide">
   
-  <div class="page-no"><b>17</b> / 14</div>
+  <div class="page-no"><b>13</b> / 10</div>
 
   <div class="slide-content">
     <span class="eyebrow reveal">도전과제 및 해결방안 (1/2)</span>
@@ -2178,7 +2660,7 @@
 <template data-commented="3.2 도전과제 및 해결방안 (2/2)">
 <section class="slide">
   
-  <div class="page-no"><b>18</b> / 14</div>
+  <div class="page-no"><b>14</b> / 10</div>
 
   <div class="slide-content">
     <span class="eyebrow reveal">도전과제 및 해결방안 (2/2)</span>
@@ -2214,7 +2696,7 @@
 <template data-commented="3.3 추진일정 · 5월~11월">
 <section class="slide">
   
-  <div class="page-no"><b>19</b> / 14</div>
+  <div class="page-no"><b>15</b> / 10</div>
 
   <div class="slide-content">
     <span class="eyebrow reveal">추진일정 · 5월~11월</span>
@@ -2275,7 +2757,7 @@
 <template data-commented="3.3 추진일정 · 역할 분담">
 <section class="slide">
   
-  <div class="page-no"><b>20</b> / 14</div>
+  <div class="page-no"><b>16</b> / 10</div>
 
   <div class="slide-content">
     <span class="eyebrow reveal">추진일정 · 역할 분담</span>
@@ -2331,7 +2813,7 @@
      ============================================= -->
 <section class="slide">
   
-  <div class="page-no"><b>13</b> / 14</div>
+  <div class="page-no"><b>09</b> / 10</div>
 
   <div class="slide-content">
     <span class="eyebrow reveal">기대효과</span>
@@ -2361,7 +2843,7 @@
      ============================================= -->
 <section class="slide">
 
-  <div class="page-no"><b>14</b> / 14</div>
+  <div class="page-no"><b>10</b> / 10</div>
 
   <div class="slide-content">
     <span class="eyebrow reveal">TEAM</span>
@@ -2441,7 +2923,7 @@
      ============================================= -->
 <section class="slide closing">
   <div class="brand-mark"><span class="dot"></span>SIRLAB / HANDONG</div>
-  <div class="page-no"><b>END</b> / 14</div>
+  <div class="page-no"><b>END</b> / 10</div>
 
   <div class="slide-content">
     <span class="eyebrow reveal" style="margin: 0 auto;">THANK YOU</span>
@@ -2641,6 +3123,271 @@
     /* 첫 슬라이드는 즉시 visible 처리 (초기 진입 애니메이션) */
     document.querySelector('.slide')?.classList.add('visible');
   });
+</script>
+
+<!-- =============================================
+     SLIDE 7 — 3D ROBOT ARM (Three.js)
+     ============================================= -->
+<script>
+(function init3DRobotArm() {
+  if (typeof THREE === 'undefined') {
+    console.warn('Three.js not loaded — 3D robot arm disabled');
+    return;
+  }
+  const canvas = document.getElementById('armCanvas3d');
+  if (!canvas) return;
+
+  // Renderer
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  if ('outputColorSpace' in renderer) renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+  // Scene + Camera
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 100);
+  camera.position.set(0.6, 1.7, 5.6);
+  camera.lookAt(0, 0.95, 0);
+
+  // Lights
+  scene.add(new THREE.AmbientLight(0xffffff, 0.42));
+  const keyLight = new THREE.DirectionalLight(0xfff0e0, 1.15);
+  keyLight.position.set(3.2, 5, 4);
+  keyLight.castShadow = true;
+  keyLight.shadow.mapSize.set(1024, 1024);
+  keyLight.shadow.camera.left = -4;
+  keyLight.shadow.camera.right = 4;
+  keyLight.shadow.camera.top = 4;
+  keyLight.shadow.camera.bottom = -4;
+  keyLight.shadow.camera.near = 0.5;
+  keyLight.shadow.camera.far = 14;
+  keyLight.shadow.bias = -0.001;
+  scene.add(keyLight);
+  const rimLight = new THREE.DirectionalLight(0xff7a4a, 0.55);
+  rimLight.position.set(-3, 2, -2);
+  scene.add(rimLight);
+  const fillLight = new THREE.DirectionalLight(0x66aaff, 0.22);
+  fillLight.position.set(0, 3, -5);
+  scene.add(fillLight);
+
+  // Floor
+  const floor = new THREE.Mesh(
+    new THREE.PlaneGeometry(20, 20),
+    new THREE.MeshStandardMaterial({ color: 0x14181c, roughness: 0.92, metalness: 0.1 })
+  );
+  floor.rotation.x = -Math.PI / 2;
+  floor.receiveShadow = true;
+  scene.add(floor);
+  const grid = new THREE.GridHelper(8, 16, 0x37474F, 0x1f2428);
+  grid.position.y = 0.001;
+  if (grid.material) { grid.material.opacity = 0.3; grid.material.transparent = true; }
+  scene.add(grid);
+
+  // Materials
+  const matBase = new THREE.MeshStandardMaterial({ color: 0x2a3137, metalness: 0.7, roughness: 0.3 });
+  const matMid  = new THREE.MeshStandardMaterial({ color: 0x546E7A, metalness: 0.65, roughness: 0.35 });
+  const matLight= new THREE.MeshStandardMaterial({ color: 0x90A4AE, metalness: 0.6, roughness: 0.35 });
+  const matAccent = new THREE.MeshStandardMaterial({ color: 0xFF5722, metalness: 0.4, roughness: 0.45, emissive: 0xFF5722, emissiveIntensity: 0.35 });
+
+  // Pedestal + base hub
+  const pedestal = new THREE.Mesh(new THREE.CylinderGeometry(0.42, 0.48, 0.18, 28), matBase);
+  pedestal.position.y = 0.09; pedestal.castShadow = true; pedestal.receiveShadow = true;
+  scene.add(pedestal);
+  const baseHub = new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.34, 0.16, 24), matMid);
+  baseHub.position.y = 0.26; baseHub.castShadow = true;
+  scene.add(baseHub);
+  const accentRing = new THREE.Mesh(new THREE.TorusGeometry(0.30, 0.025, 12, 32), matAccent);
+  accentRing.position.y = 0.27; accentRing.rotation.x = Math.PI / 2;
+  scene.add(accentRing);
+
+  // Shoulder pivot
+  const shoulder = new THREE.Group();
+  shoulder.position.y = 0.36;
+  scene.add(shoulder);
+  const shoulderJoint = new THREE.Mesh(new THREE.SphereGeometry(0.17, 18, 18), matBase);
+  shoulderJoint.castShadow = true;
+  shoulder.add(shoulderJoint);
+
+  // Upper arm
+  const upperArmLength = 1.3;
+  const upperArmGroup = new THREE.Group();
+  shoulder.add(upperArmGroup);
+  const upperArmShape = new THREE.Mesh(new THREE.BoxGeometry(0.22, upperArmLength, 0.22), matMid);
+  upperArmShape.position.y = upperArmLength / 2;
+  upperArmShape.castShadow = true;
+  upperArmGroup.add(upperArmShape);
+  const upperStripe = new THREE.Mesh(new THREE.BoxGeometry(0.025, upperArmLength * 0.7, 0.232), matAccent);
+  upperStripe.position.y = upperArmLength / 2;
+  upperArmGroup.add(upperStripe);
+
+  // Elbow
+  const elbow = new THREE.Group();
+  elbow.position.y = upperArmLength;
+  upperArmGroup.add(elbow);
+  const elbowJoint = new THREE.Mesh(new THREE.SphereGeometry(0.13, 16, 16), matBase);
+  elbowJoint.castShadow = true;
+  elbow.add(elbowJoint);
+
+  // Forearm
+  const foreArmLength = 1.0;
+  const foreArmGroup = new THREE.Group();
+  elbow.add(foreArmGroup);
+  const foreArmShape = new THREE.Mesh(new THREE.BoxGeometry(0.18, foreArmLength, 0.18), matLight);
+  foreArmShape.position.y = foreArmLength / 2;
+  foreArmShape.castShadow = true;
+  foreArmGroup.add(foreArmShape);
+
+  // Wrist + gripper
+  const wrist = new THREE.Group();
+  wrist.position.y = foreArmLength;
+  foreArmGroup.add(wrist);
+  const wristJoint = new THREE.Mesh(new THREE.SphereGeometry(0.10, 14, 14), matBase);
+  wristJoint.castShadow = true;
+  wrist.add(wristJoint);
+  const gripperBar = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.07, 0.16), matLight);
+  gripperBar.position.y = 0.04;
+  gripperBar.castShadow = true;
+  wrist.add(gripperBar);
+  const fingerGeom = new THREE.BoxGeometry(0.06, 0.22, 0.13);
+  const fingerL = new THREE.Mesh(fingerGeom, matLight);
+  fingerL.position.set(-0.16, -0.07, 0); fingerL.castShadow = true;
+  wrist.add(fingerL);
+  const fingerR = new THREE.Mesh(fingerGeom, matLight);
+  fingerR.position.set(0.16, -0.07, 0); fingerR.castShadow = true;
+  wrist.add(fingerR);
+
+  // Cube (red)
+  const cubeSize = 0.32;
+  const cubeMat = new THREE.MeshStandardMaterial({
+    color: 0xE53935, metalness: 0.15, roughness: 0.5,
+    emissive: 0x4a0c0c, emissiveIntensity: 0.3,
+    transparent: true, opacity: 1
+  });
+  const cube = new THREE.Mesh(new THREE.BoxGeometry(cubeSize, cubeSize, cubeSize), cubeMat);
+  cube.castShadow = true; cube.receiveShadow = true;
+  const cubeStartPos = new THREE.Vector3(-1.9, cubeSize / 2, 0);
+  cube.position.copy(cubeStartPos);
+  scene.add(cube);
+
+  // Yellow target tray
+  const targetGroup = new THREE.Group();
+  targetGroup.position.set(2.0, 0, 0);
+  scene.add(targetGroup);
+  const targetMat  = new THREE.MeshStandardMaterial({ color: 0xFFD54F, metalness: 0.1, roughness: 0.55 });
+  const targetTrim = new THREE.MeshStandardMaterial({ color: 0xFFA000, metalness: 0.18, roughness: 0.5 });
+  const targetBody = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.3, 0.55), targetMat);
+  targetBody.position.y = 0.15; targetBody.castShadow = true; targetBody.receiveShadow = true;
+  targetGroup.add(targetBody);
+  const targetRim = new THREE.Mesh(new THREE.BoxGeometry(0.74, 0.04, 0.59), targetTrim);
+  targetRim.position.y = 0.32; targetRim.castShadow = true;
+  targetGroup.add(targetRim);
+
+  // ===== Animation =====
+  // 10s cycle: action 0-74%, then ~2.3s rest with "완료" message visible before reset
+  const cycleDuration = 10.0;
+  function smooth(t) { return t < 0.5 ? 2*t*t : -1 + (4-2*t)*t; }
+  function lerp(a, b, t) { return a + (b - a) * t; }
+  function animateValue(t, kfs) {
+    if (t <= kfs[0][0]) return kfs[0][1];
+    for (let i = 0; i < kfs.length - 1; i++) {
+      if (t <= kfs[i+1][0]) {
+        const localT = (t - kfs[i][0]) / (kfs[i+1][0] - kfs[i][0]);
+        return lerp(kfs[i][1], kfs[i+1][1], smooth(localT));
+      }
+    }
+    return kfs[kfs.length-1][1];
+  }
+
+  // Joint angle keyframes (radians) — action keyframes scaled ×0.8 from 8s cycle
+  // so absolute action timing stays the same; trailing time is rest with done msg.
+  const shoulderKF = [
+    [0.00,  0],    [0.08,  0],
+    [0.18,  1.17], [0.24,  1.17],
+    [0.34,  0.55],
+    [0.42,  0],
+    [0.50, -0.95], [0.56, -1.0],
+    [0.64, -0.4],
+    [0.74,  0],    [1.00,  0]
+  ];
+  const elbowKF = [
+    [0.00,  0],    [0.08,  0],
+    [0.18,  1.19], [0.24,  1.19],
+    [0.34,  0.40],
+    [0.42,  0],
+    [0.50, -0.6],  [0.56, -1.0],
+    [0.64,  0.2],
+    [0.74,  0],    [1.00,  0]
+  ];
+  const fingerKF = [
+    [0.00, 1], [0.22, 1],
+    [0.24, 0], [0.53, 0],
+    [0.58, 1], [1.00, 1]
+  ];
+
+  const targetCubePos = new THREE.Vector3(2.0, 0.34 + cubeSize / 2, 0);
+  const grabOffsetLocal = new THREE.Vector3(0, -0.20, 0);
+  const _q = new THREE.Quaternion();
+  const _v = new THREE.Vector3();
+  const _v2 = new THREE.Vector3();
+
+  function updateCube(phase) {
+    let opacity = 1;
+    if (phase < 0.22) {
+      cube.position.copy(cubeStartPos);
+    } else if (phase < 0.56) {
+      _v2.copy(grabOffsetLocal).applyQuaternion(wrist.getWorldQuaternion(_q));
+      cube.position.copy(wrist.getWorldPosition(_v)).add(_v2);
+    } else if (phase < 0.95) {
+      cube.position.copy(targetCubePos);
+    } else if (phase < 0.97) {
+      cube.position.copy(targetCubePos);
+      opacity = 1 - (phase - 0.95) / 0.02;
+    } else if (phase < 0.99) {
+      cube.position.copy(cubeStartPos);
+      opacity = 0;
+    } else {
+      cube.position.copy(cubeStartPos);
+      opacity = (phase - 0.99) / 0.01;
+    }
+    cubeMat.opacity = Math.max(0, Math.min(1, opacity));
+  }
+
+  function update(elapsed) {
+    const t = (elapsed % cycleDuration) / cycleDuration;
+    shoulder.rotation.z = animateValue(t, shoulderKF);
+    elbow.rotation.z    = animateValue(t, elbowKF);
+    const spread = animateValue(t, fingerKF);
+    fingerL.position.x = -0.16 * (0.45 + spread * 0.55);
+    fingerR.position.x =  0.16 * (0.45 + spread * 0.55);
+    updateCube(t);
+    matAccent.emissiveIntensity = 0.25 + Math.sin(elapsed * 4) * 0.1;
+  }
+
+  // Resize
+  function resize() {
+    const w = canvas.clientWidth, h = canvas.clientHeight;
+    if (w === 0 || h === 0) return;
+    renderer.setSize(w, h, false);
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+  }
+  if (typeof ResizeObserver !== 'undefined') {
+    new ResizeObserver(resize).observe(canvas);
+  } else {
+    window.addEventListener('resize', resize);
+  }
+  resize();
+
+  // Render loop
+  const clock = new THREE.Clock();
+  function render() {
+    update(clock.getElapsedTime());
+    renderer.render(scene, camera);
+    requestAnimationFrame(render);
+  }
+  render();
+})();
 </script>
 
 </body>
